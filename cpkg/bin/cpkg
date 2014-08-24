@@ -12,7 +12,7 @@ MYTOPDIR=$(cd $MYDIR/.. && pwd)
 export CPKG_BIN=$MYDIR/$ME
 
 ##CPKG_DIRS##
-# BOOTSTRAP BEGIN
+# CPKG BOOTSTRAP BEGIN
 if [ -z "$LIBDIR" ]; then
     export BINDIR=$MYTOPDIR/bin
     export ETCDIR=$MYTOPDIR/etc
@@ -21,7 +21,7 @@ if [ -z "$LIBDIR" ]; then
     export VARDIR=$MYTOPDIR/var
     export LOGDIR=$MYTOPDIR/log
 fi
-# BOOTSTRAP END
+# CPKG BOOTSTRAP END
 
 . $LIBDIR/libcpkg.sh
 
@@ -43,15 +43,7 @@ function cpkg_build() {
     cp_run_support_modules
     lp_process_package_files
     lp_clean_packages_scripts
-# BOOTSTRAP BEGIN
-    if [ "$PKG_NAME" = "cpkg" -a -d $PKG_STAGEDIR/$PKG_BINDIR ]; then
-        SCRIPTS=$(find $PKG_STAGEDIR/$PKG_BINDIR -type f | xargs)
-
-        for SCRIPT in $SCRIPTS; do
-            cp_delete_block $SCRIPT "BOOTSTRAP" "#"
-        done
-    fi
-# BOOTSTRAP END
+    cp_delete_bootstrap
 }
 
 function cpkg_install() {

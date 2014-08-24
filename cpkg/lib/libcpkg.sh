@@ -413,6 +413,19 @@ function cp_find_arch() {
     echo $ARCH
 }
 
+function cp_delete_bootstrap() {
+    if [ -d $PKG_STAGEDIR/$PKG_BINDIR ]; then
+        SCRIPTS=$(
+            find $PKG_STAGEDIR/$PKG_BINDIR -type f | \
+            xargs grep -l "^# CPKG BOOTSTRAP"
+        )
+
+        for SCRIPT in $SCRIPTS; do
+            cp_delete_block $SCRIPT "CPKG BOOTSTRAP" "#"
+        done
+    fi
+}
+
 function cp_set_package_variables() {
     PKG_ARCH=$(cp_find_arch)
 
