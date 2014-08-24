@@ -184,6 +184,11 @@ function cp_load_conf() {
         cp_set_scm_variables
         cp_load_vars
 
+        # Clean PKG_LONGDESC
+        if [[ "$PKG_LONGDESC" =~ ^[[:space:]]*(.*)[[:space:]]*$ ]]; then
+            PKG_LONGDESC="${BASH_REMATCH[1]}"
+        fi
+
         PKG_SOURCEDIR=$TOPDIR/$PKG_NAME
         TMPLDIR=$SHAREDIR/templates
         PKGTMPL=$SHAREDIR/templates/package/$CPKG_TYPE
