@@ -1,4 +1,4 @@
 # CPKG_GITIGNORE BEGIN
 Makefile
-cbuild-*
+cpkg-*
 # CPKG_GITIGNORE END

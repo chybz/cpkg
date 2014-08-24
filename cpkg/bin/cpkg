@@ -64,7 +64,7 @@ function cpkg_install() {
 
 function cpkg_package() {
     if (($PKGSRC_CONFIGURE)); then
-        PKGSRC_UPDATE=1
+        export PKGSRC_UPDATE=1
         cpkg_configure
     fi
 
