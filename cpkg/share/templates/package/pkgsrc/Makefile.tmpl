@@ -30,7 +30,7 @@ DEPENDS+=	%{ $DEP }%
 % fi
 
 WRKSRC=		${WRKDIR}/%{ ${PKG_NAME} }%-${GHCOMMIT}
-% CFGFILES=$(cp_find_rel $ETCDIR)
+% CFGFILES=$(cp_find_rel $PKG_SOURCEDIR/etc)
 % if [[ -n "$CFGFILES" ]]; then
 
 EGDIR=		${PREFIX}/share/${PKGBASE}/etc/${PKGBASE}
@@ -40,7 +40,7 @@ CONF_FILES+=	${EGDIR}/%{ $CFGFILE }% \
 %     done
 
 OWN_DIRS+=	${PKG_SYSCONFDIR}/${PKGBASE}
-% CFGDIRS=$(cp_find_rel $ETCDIR "d")
+% CFGDIRS=$(cp_find_rel $PKG_SOURCEDIR/etc "d")
 %     for CFGDIR in $CFGDIRS; do
 OWN_DIRS+=	${PKG_SYSCONFDIR}/${PKGBASE}/%{ $CFGDIR }%
 %     done
