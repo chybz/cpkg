@@ -44,8 +44,15 @@ function lp_clean_packages_scripts() {
     return
 }
 
-function lp_install_local_packages() {
-    sudo pkg_add *.tgz
+function lp_install_local_package() {
+    local DIR=$PKGSRC_DIR/packages/All
+
+    [[ -d "$DIR" ]] || cp_error "invalid binary package directory: $DIR"
+
+    local PKG=$DIR/${PKG_NAME}-${PKG_VER}.tgz
+
+    [[ -f "$PKG" ]] || cp_error "package not found: $PKG"
+    sudo pkg_add -U $PKG
 }
 
 function lp_install_packages() {

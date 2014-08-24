@@ -112,7 +112,7 @@ function lp_clean_packages_scripts() {
     fi
 }
 
-function lp_install_local_packages() {
+function lp_install_local_package() {
     sudo dpkg -i *.deb
 }
 

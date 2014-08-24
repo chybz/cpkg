@@ -18,7 +18,7 @@ function lp_create_interface() {
         lp_handle_manpage
         lp_handle_system_file
         lp_handle_package_files
-        lp_install_local_packages
+        lp_install_local_package
         lp_install_packages
         lp_configure_package
         lp_build_package

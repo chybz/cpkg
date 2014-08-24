@@ -66,6 +66,10 @@ function cpkg_package() {
     fi
 
     lp_build_package
+
+    if (($PKGSRC_INSTALL)); then
+        lp_install_local_package
+    fi
 }
 
 function cpkg_clean() {
@@ -93,6 +97,7 @@ if (($CPKG_IS_PKGSRC)); then
 
     # Package options
     PKGOPTS[C]="PKGSRC_CONFIGURE::reconfigure before packaging:no"
+    PKGOPTS[I]="PKGSRC_INSTALL::install package:no"
 fi
 
 cp_add_command "configure" CFGOPTS

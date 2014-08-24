@@ -16,5 +16,8 @@ build:
 install:
 	$(CPKG) install
 
+update-pkg:
+	$(CPKG) package -C -I
+
 clean:
 	$(CPKG) clean
