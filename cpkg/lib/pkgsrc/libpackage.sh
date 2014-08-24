@@ -71,6 +71,7 @@ function lp_build_package() {
     sudo bmake stage-install CHECK_FILES=no
     sudo bmake print-PLIST > PLIST
     pkglint
+    sudo bmake clean
     sudo bmake package
 }
 
