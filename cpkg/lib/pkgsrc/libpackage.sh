@@ -36,6 +36,8 @@ function lp_handle_package_files() {
 
     if [[ -d $PKG_STAGEDIR/$PKG_SYSETCDIR ]]; then
         mkdir -p $PKG_STAGEDIR/$PKG_SHAREDIR
+        [[ $PKG_STAGEDIR/$PKG_SHAREDIR/etc ]] && \
+            rm -rf $PKG_STAGEDIR/$PKG_SHAREDIR/etc
         mv $PKG_STAGEDIR/$PKG_SYSETCDIR $PKG_STAGEDIR/$PKG_SHAREDIR/etc
     fi
 }
