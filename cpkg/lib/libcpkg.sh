@@ -157,14 +157,6 @@ function cp_make_home() {
     mkdir -p $CPKG_HOME
 }
 
-function cp_load_vars() {
-    if [ -e $CPKG_LIBDIR/$CPKG_TYPE/pkg_vars.sh ]; then
-        . $CPKG_LIBDIR/$CPKG_TYPE/pkg_vars.sh
-    else
-        cp_error "package variables not supported for $CPKG_TYPE"
-    fi
-}
-
 cp_init
 
 REQUIRED="__required__"
@@ -184,7 +176,6 @@ function cp_load_conf() {
         cp_ensure_vars_are_set $PACKAGE_VARS
         [[ "$PKG_NAME" == "cpkg" ]] && CPKG_BUILDING_MYSELF=1
         cp_set_scm_variables
-        cp_load_vars
 
         PKG_LONGDESC="${PKG_LONGDESC/#*($'\n')/}"
         PKG_LONGDESC="${PKG_LONGDESC/%*($'\n')/}"

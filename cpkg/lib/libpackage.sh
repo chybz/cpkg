@@ -1,7 +1,3 @@
-if [ -f $ETCDIR/package/$CPKG_TYPE.conf ]; then
-    . $ETCDIR/package/$CPKG_TYPE.conf
-fi
-
 function lp_create_function() {
     # Create an interface function that must be defined
     # by the underlying package specific library
@@ -37,10 +33,25 @@ function lp_create_interface() {
     done
 }
 
-lp_create_interface
+function lp_load_conf() {
+    local DIR
 
+    if [[ -n "$ETCDIR" ]]; then
+        DIR=$ETCDIR
+    else
+        DIR=$PKG_ETCDIR
+    fi
+
+    if [ -f $DIR/package/$CPKG_TYPE.conf ]; then
+        . $DIR/package/$CPKG_TYPE.conf
+    fi
+}
+
+. $CPKG_LIBDIR/$CPKG_TYPE/pkg_vars.sh
+lp_load_conf
 . $CPKG_LIBDIR/$CPKG_TYPE/libpackage.sh
 
+lp_create_interface
 lp_init
 
 function lp_process_package_files() {
