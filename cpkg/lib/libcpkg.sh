@@ -442,7 +442,7 @@ function cp_set_git_variables() {
         export PKG_FROM_GH=1
         export PKG_GH_COMMIT=$(git log --pretty=format:'%H' -n 1)
         export PKG_GH_URL=${URL#git@github.com:}
-        export PKG_URL="https://github.com/achille-roussel/nanomsgxx"
+        PKG_GH_URL=${PKG_GH_URL%\.git}
         PKG_GH_URL="https://github.com/$PKG_GH_URL"
     fi
 }
