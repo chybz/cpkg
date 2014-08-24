@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -e
+
+##CPKG_DIRS##
+
+while getopts "Lls" OPT; do
+    case $OPT in
+        L)
+        echo $LIBDIR/libcpkg.sh
+        ;;
+
+        l)
+        echo $LIBDIR
+        ;;
+
+        s)
+        echo $SHAREDIR
+        ;;
+    esac
+done
+
+##############################################################################
+#
+# POD Documentation
+#
+##############################################################################
+: <<=cut
+=head1 NAME
+
+cpkg-config - cpkg config helper
+
+=head1 DESCRIPTION
+
+cpkg-config returns various information on cpkg installation directories
+
+=head1 SYNOPSIS
+
+  cpkg-config [OPTION...]
+
+    Options:
+      -L                          path to libcpkg.sh
+      -l                          library directory
+      -s                          shared directory
+
+=cut
