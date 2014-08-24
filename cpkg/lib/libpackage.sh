@@ -2,7 +2,7 @@ function lp_create_function() {
     # Create an interface function that must be defined
     # by the underlying package specific library
     local -r F="$1() {
-        error \"$1 is not defined for $CPKG_TYPE\"
+        cp_error \"$1 is not defined for $CPKG_TYPE\"
     }"
     eval "$F"
 }
@@ -33,6 +33,8 @@ function lp_create_interface() {
     done
 }
 
+lp_create_interface
+
 function lp_load_conf() {
     local DIR
 
@@ -51,7 +53,6 @@ function lp_load_conf() {
 lp_load_conf
 . $CPKG_LIBDIR/$CPKG_TYPE/libpackage.sh
 
-lp_create_interface
 lp_init
 
 function lp_process_package_files() {
