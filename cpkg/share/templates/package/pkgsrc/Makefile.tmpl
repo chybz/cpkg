@@ -38,6 +38,12 @@ EGDIR=		${PREFIX}/share/${PKGBASE}/etc/${PKGBASE}
 CONF_FILES+=	${EGDIR}/%{ $CFGFILE }% \
 		${PKG_SYSCONFDIR}/${PKGBASE}/%{ $CFGFILE }%
 %     done
+
+OWN_DIRS+=	${PKG_SYSCONFDIR}/${PKGBASE}
+% CFGDIRS=$(cp_find_rel $ETCDIR "d")
+%     for CFGDIR in $CFGDIRS; do
+OWN_DIRS+=	${PKG_SYSCONFDIR}/${PKGBASE}/%{ $CFGDIR }%
+%     done
 % fi
 
 % if (($CPKG_BUILDING_MYSELF)); then

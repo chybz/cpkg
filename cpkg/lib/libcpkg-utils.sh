@@ -185,6 +185,7 @@ function cp_reinplace() {
 function cp_find_re_rel() {
     local DIR=$1
     local RE=$2
+    local TYPE=${3:-f}
 
     local FILES
 
@@ -193,14 +194,20 @@ function cp_find_re_rel() {
             Linux)
             FILES=$(
                 find $DIR \
-                    -type f \
+                    -type $TYPE \
+                    -mindepth 1 \
                     -regextype posix-extended \
                     -regex "$RE" | xargs
             )
             ;;
 
             MacOSX)
-            FILES=$(find -E $DIR -type f -regex "$RE" | xargs)
+            FILES=$(
+                find -E $DIR \
+                    -type $TYPE \
+                    -mindepth 1 \
+                    -regex "$RE" | xargs
+            )
             ;;
         esac
 
@@ -212,13 +219,14 @@ function cp_find_re_rel() {
 
 function cp_find_rel() {
     local DIR=$1
+    local TYPE=${2:-f}
 
-    local FILES
+    local ITEMS
 
     if [ -d $DIR ]; then
-        FILES=$(find $DIR -type f | xargs)
-        FILES=${FILES//$DIR\/}
+        ITEMS=$(find $DIR -type $TYPE -mindepth 1 | xargs)
+        ITEMS=${ITEMS//$DIR\/}
     fi
 
-    echo $FILES
+    echo $ITEMS
 }
