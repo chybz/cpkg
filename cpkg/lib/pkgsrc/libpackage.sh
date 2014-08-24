@@ -4,9 +4,9 @@
 #
 ##############################################################################
 function lp_init() {
-    [ -z "$PKGSRC_DIR" ] && error "PKGSRC_DIR is not configured"
+    [ -z "$PKGSRC_DIR" ] && cp_error "PKGSRC_DIR is not configured"
     [ -e "$PKGSRC_DIR" -a -f "$PKGSRC_DIR/mk/bsd.pkg.mk" ] || \
-        error "$PKGSRC_DIR is not a valid pkgsrc source directory"
+        cp_error "$PKGSRC_DIR is not a valid pkgsrc source directory"
 
     export PKGSRC_DIR
 }
