@@ -74,7 +74,7 @@ function cpkg_clean() {
 # Main part
 #
 ##############################################################################
-cp_load_conf
+cp_check_conf
 
 declare -A CFGOPTS
 declare -A PKGOPTS

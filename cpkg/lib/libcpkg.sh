@@ -146,6 +146,7 @@ function cp_init() {
     export CPKG_HOME=$HOME/.cpkg
 
     if [ -z "$LIBCPKG_MINIMAL" ]; then
+        [[ -f $CPKG_CONF ]] && . $CPKG_CONF
         . $CPKG_LIBDIR/libcpkg-utils.sh
         . $CPKG_LIBDIR/libpackage.sh
     else
@@ -168,10 +169,8 @@ CPKG_REINPLACE_FILE=/tmp/cpkg-reinplace.$$
 # Utility unctions
 #
 ##############################################################################
-function cp_load_conf() {
+function cp_check_conf() {
     if [[ -f $CPKG_CONF ]]; then
-        . $CPKG_CONF
-
         PKG_DATE=`date '+%a, %d %b %Y %H:%M:%S %z'`
         cp_ensure_vars_are_set $PACKAGE_VARS
         [[ "$PKG_NAME" == "cpkg" ]] && CPKG_BUILDING_MYSELF=1
