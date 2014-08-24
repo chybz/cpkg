@@ -66,7 +66,9 @@ function lp_build_package() {
     [[ -d "$DIR" ]] || cp_error "invalid package directory: $DIR"
 
     cd $DIR
-    sudo bmake distclean fetch mdi
+    sudo bmake distclean
+    sudo bmake fetch
+    sudo bmake mdi
     sudo bmake
     sudo bmake stage-install CHECK_FILES=no
     sudo bmake print-PLIST > PLIST
