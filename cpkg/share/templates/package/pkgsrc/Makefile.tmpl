@@ -1,0 +1,53 @@
+% if ((!$PKGSRC_UPDATE && !$PKGSRC_LOCAL_UPDATE)); then
+%     OPTS["process"]=0
+% else
+%     if (($PKGSRC_UPDATE)); then
+%         OPTS["rename-to"]="$PKGSRC_DIR/$PKG_CAT/$PKG_NAME/Makefile"
+%     elif (($PKGSRC_LOCAL_UPDATE)); then
+%         OPTS["rename-to"]="$PKG_CAT/$PKG_NAME/Makefile"
+%     fi
+# $NetBSD$
+
+PKGNAME=	%{ ${PKG_NAME} }%-%{ ${PKG_VER} }%
+CATEGORIES=	%{ ${PKG_CAT} }%
+% if (($PKG_FROM_GH)); then
+HOMEPAGE=	%{ ${PKG_GH_URL} }%
+GHCOMMIT=	%{ ${PKG_GH_COMMIT} }%
+DISTNAME=	${GHCOMMIT}.zip
+MASTER_SITES=	%{ ${PKG_GH_URL} }%/archive/
+DIST_SUBDIR=	%{ ${PKG_NAME} }%
+% fi
+EXTRACT_SUFX=	# none
+
+MAINTAINER=	%{ ${PKG_AUTHOR} }%
+COMMENT=	%{ ${PKG_SHORTDESC} }%
+LICENSE=	mit
+% if ((${#PKG_DEPS[@]})); then
+
+%     for DEP in ${PKG_DEPS[@]}; do
+DEPENDS+=	%{ $DEP }%
+%     done
+% fi
+
+WRKSRC=		${WRKDIR}/%{ ${PKG_NAME} }%-${GHCOMMIT}
+% CFGFILES=$(cp_find_rel $ETCDIR)
+% if [[ -n "$CFGFILES" ]]; then
+
+EGDIR=		${PREFIX}/share/${PKGBASE}/etc/${PKGBASE}
+%     for CFGFILE in $CFGFILES; do
+CONF_FILES+=	${EGDIR}/%{ $CFGFILE }% \
+		${PKG_SYSCONFDIR}/${PKGBASE}/%{ $CFGFILE }%
+%     done
+% fi
+
+% if (($CPKG_BUILDING_MYSELF)); then
+CPKG=		./cpkg/bin/cpkg
+% else
+CPKG=		cpkg
+% fi
+
+do-configure:
+	cd ${WRKSRC} && ${CPKG} configure
+
+.include "../../mk/bsd.pkg.mk"
+% fi

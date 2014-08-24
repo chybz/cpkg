@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+##############################################################################
+#
+# Global variables
+#
+##############################################################################
+ME=$(basename $0)
+MYDIR=$(dirname $0)
+MYDIR=$(cd $MYDIR && pwd)
+export CPKG_BIN=$MYDIR/$ME
+
+##CPKG_DIRS##
+
+# BOOTSTRAP BEGIN
+if [ -z "$LIBDIR" ]; then
+    MYDIR=`dirname $0`
+    MYDIR=`cd $MYDIR/.. && pwd`
+    export BINDIR=$MYDIR/bin
+    export ETCDIR=$MYDIR/etc
+    export LIBDIR=$MYDIR/lib
+    export SHAREDIR=$MYDIR/share
+    export VARDIR=$MYDIR/var
+    export LOGDIR=$MYDIR/log
+fi
+# BOOTSTRAP END
+
+. $LIBDIR/libcpkg.sh
+
+##############################################################################
+#
+# Functions
+#
+##############################################################################
+function cpkg_configure() {
+    lp_configure_package
+    cp_process_templates $SHAREDIR/templates/PKG $TOPDIR
+
+    CPKG_TMPL_PRE=("declare -a PKG_DEPS=(\"${PKG_DEPS[@]}\")")
+    cp_process_templates $PKGTMPL $PKG_ROOTDIR
+}
+
+function cpkg_build() {
+    lp_prepare_package_directory
+    cp_run_support_modules
+    lp_process_package_files
+    lp_clean_packages_scripts
+
+# BOOTSTRAP BEGIN
+    if [ "$PKG_NAME" = "cpkg" -a -d $PKG_STAGEDIR/$PKG_BINDIR ]; then
+        SCRIPTS=$(find $PKG_STAGEDIR/$PKG_BINDIR -type f | xargs)
+
+        for SCRIPT in $SCRIPTS; do
+            cp_delete_block $SCRIPT "BOOTSTRAP" "#"
+        done
+    fi
+# BOOTSTRAP END
+}
+
+function cpkg_install() {
+    cp_ensure_dir_is_writable "$DESTDIR/"
+    $RSYNC $RSYNC_OPTS $PKG_STAGEDIR/ $DESTDIR/
+}
+
+function cpkg_package() {
+    if (($PKGSRC_CONFIGURE)); then
+        PKGSRC_UPDATE=1
+        cpkg_configure
+    fi
+
+    lp_build_package
+}
+
+function cpkg_clean() {
+    # Clean previous package directories
+    [[ -d $PKG_ROOTDIR ]] && rm -rf $PKG_ROOTDIR
+}
+
+##############################################################################
+#
+# Main part
+#
+##############################################################################
+cp_load_conf
+
+declare -A CFGOPTS
+declare -A PKGOPTS
+
+if (($CPKG_IS_PKGSRC)); then
+    PPATH=$PKGSRC_DIR
+    [[ -n "$PKG_CAT" && -n "$PKG_NAME" ]] && PPATH+="/$PKG_CAT/$PKG_NAME"
+
+    # Configure options
+    CFGOPTS[P]="PKGSRC_UPDATE::update pkgsrc files in $PPATH:no"
+    CFGOPTS[p]="PKGSRC_LOCAL_UPDATE::creates local pkgsrc files:no"
+
+    # Package options
+    PKGOPTS[C]="PKGSRC_CONFIGURE::reconfigure before packaging:no"
+fi
+
+cp_add_command "configure" CFGOPTS
+cp_add_command "build"
+cp_add_command "install"
+cp_add_command "package" PKGOPTS
+cp_add_command "clean"
+
+cp_get_options "$@"
+
+# Check configuration was loaded
+cp_ensure_file_exists $CPKG_CONF
+cp_ensure_dir_exists $PKG_SOURCEDIR
+
+case $CPKG_CMD in
+    configure)
+        cpkg_configure
+        ;;
+    build)
+        cpkg_build
+        ;;
+    install)
+        cpkg_install
+        ;;
+    package)
+        cpkg_package
+        ;;
+    clean)
+        cpkg_clean
+        ;;
+    *)
+        cp_error "invalid command: $COMMAND"
+        ;;
+esac
+
+##############################################################################
+#
+# POD Documentation
+#
+##############################################################################
+: <<=cut
+=pod
+
+=head1 NAME
+
+cpkg - simplified package generator
+
+=head1 DESCRIPTION
+
+cpkg is a simplified package builder allowing you to
+automate most packaging related tasks.
+
+=head1 SYNOPSIS
+
+  cpkg
+
+=cut

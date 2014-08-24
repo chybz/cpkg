@@ -1,0 +1,12 @@
+% OPTS["skip-if-exists"]=1
+%
+% if ((!$PKGSRC_UPDATE && !$PKGSRC_LOCAL_UPDATE)); then
+%     OPTS["process"]=0
+% else
+%     if (($PKGSRC_UPDATE)); then
+%         OPTS["rename-to"]="$PKGSRC_DIR/$PKG_CAT/$PKG_NAME/PLIST"
+%     elif (($PKGSRC_LOCAL_UPDATE)); then
+%         OPTS["rename-to"]="$PKG_CAT/$PKG_NAME/PLIST"
+%     fi
+@comment $NetBSD$
+% fi

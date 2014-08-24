@@ -1,0 +1,10 @@
+% if ((!$PKGSRC_UPDATE && !$PKGSRC_LOCAL_UPDATE)); then
+%     OPTS["process"]=0
+% else
+%     if (($PKGSRC_UPDATE)); then
+%         OPTS["rename-to"]="$PKGSRC_DIR/$PKG_CAT/$PKG_NAME/DESCR"
+%     elif (($PKGSRC_LOCAL_UPDATE)); then
+%         OPTS["rename-to"]="$PKG_CAT/$PKG_NAME/DESCR"
+%     fi
+%{ $PKG_LONGDESC }%
+% fi

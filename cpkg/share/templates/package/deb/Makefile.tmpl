@@ -1,0 +1,10 @@
+RSYNC=rsync
+RSYNC_OPTS=-avq --delete
+
+all:
+
+install:
+	DEBDIR=`dirname $(DESTDIR)` && \
+	for PKG_NAME in $(PKG_NAMES); do \
+		$(RSYNC) $(RSYNC_OPTS) stage/$$PKG_NAME/ $$DEBDIR/$$PKG_NAME/ ; \
+	done

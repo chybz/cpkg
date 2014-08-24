@@ -1,0 +1,4 @@
+# CPKG_GITIGNORE BEGIN
+Makefile
+cbuild-*
+# CPKG_GITIGNORE END

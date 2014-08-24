@@ -1,0 +1,20 @@
+#
+# cpkg generated Makefile
+#
+# DO NOT EDIT
+#
+SHELL=/bin/bash
+CPKG=%{ $CPKG_BIN }%
+
+.SILENT:
+
+all: build
+
+build:
+	$(CPKG) build
+
+install:
+	$(CPKG) install
+
+clean:
+	$(CPKG) clean
