@@ -8,20 +8,18 @@
 ME=$(basename $0)
 MYDIR=$(dirname $0)
 MYDIR=$(cd $MYDIR && pwd)
+MYTOPDIR=$(cd $MYDIR/.. && pwd)
 export CPKG_BIN=$MYDIR/$ME
 
 ##CPKG_DIRS##
-
 # BOOTSTRAP BEGIN
 if [ -z "$LIBDIR" ]; then
-    MYDIR=`dirname $0`
-    MYDIR=`cd $MYDIR/.. && pwd`
-    export BINDIR=$MYDIR/bin
-    export ETCDIR=$MYDIR/etc
-    export LIBDIR=$MYDIR/lib
-    export SHAREDIR=$MYDIR/share
-    export VARDIR=$MYDIR/var
-    export LOGDIR=$MYDIR/log
+    export BINDIR=$MYTOPDIR/bin
+    export ETCDIR=$MYTOPDIR/etc
+    export LIBDIR=$MYTOPDIR/lib
+    export SHAREDIR=$MYTOPDIR/share
+    export VARDIR=$MYTOPDIR/var
+    export LOGDIR=$MYTOPDIR/log
 fi
 # BOOTSTRAP END
 
@@ -45,7 +43,6 @@ function cpkg_build() {
     cp_run_support_modules
     lp_process_package_files
     lp_clean_packages_scripts
-
 # BOOTSTRAP BEGIN
     if [ "$PKG_NAME" = "cpkg" -a -d $PKG_STAGEDIR/$PKG_BINDIR ]; then
         SCRIPTS=$(find $PKG_STAGEDIR/$PKG_BINDIR -type f | xargs)

@@ -571,12 +571,7 @@ function cp_delete_block() {
     local BEGIN="$COMMENT $KEYWORD BEGIN"
     local END="$COMMENT $KEYWORD END"
 
-    cp_reinplace "/^$BEGIN$/ {
-        :eat
-        N
-        /$END\n$/!beat
-        d
-    }" $FILE
+    cp_reinplace "/^$BEGIN$/,/^$END/d" $FILE
 }
 
 function cp_replace_template_var_from_file() {
