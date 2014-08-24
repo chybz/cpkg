@@ -6,6 +6,8 @@ if [ "${BASH_VERSINFO[0]}" -ne 4 ]; then
     exit 1
 fi
 
+shopt -s extglob
+
 ##############################################################################
 #
 # Public global variables
@@ -184,10 +186,8 @@ function cp_load_conf() {
         cp_set_scm_variables
         cp_load_vars
 
-        # Clean PKG_LONGDESC
-        if [[ "$PKG_LONGDESC" =~ ^[[:space:]]*(.*)[[:space:]]*$ ]]; then
-            PKG_LONGDESC="${BASH_REMATCH[1]}"
-        fi
+        PKG_LONGDESC="${PKG_LONGDESC/#*($'\n')/}"
+        PKG_LONGDESC="${PKG_LONGDESC/%*($'\n')/}"
 
         PKG_SOURCEDIR=$TOPDIR/$PKG_NAME
         TMPLDIR=$SHAREDIR/templates
