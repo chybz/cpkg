@@ -1,3 +1,7 @@
+% if ((!$PKGSRC_FULL_UPDATE)); then
+%     OPTS["skip-if-exists"]=1
+% fi
+%
 % if ((!$PKGSRC_UPDATE && !$PKGSRC_LOCAL_UPDATE)); then
 %     OPTS["process"]=0
 % else
