@@ -52,8 +52,7 @@ function cpkg_install() {
 }
 
 function cpkg_package() {
-    if (($PKGSRC_CONFIGURE)); then
-        export PKGSRC_UPDATE=1
+    if (($PKGSRC_UPDATE)); then
         cpkg_configure
     fi
 
@@ -86,9 +85,10 @@ if (($CPKG_IS_PKGSRC)); then
     # Configure options
     CFGOPTS[P]="PKGSRC_UPDATE::update pkgsrc files in $PPATH:no"
     CFGOPTS[p]="PKGSRC_LOCAL_UPDATE::creates local pkgsrc files:no"
+    CFGOPTS[f]="PKGSRC_FULL_UPDATE::full update:no"
 
     # Package options
-    PKGOPTS[C]="PKGSRC_CONFIGURE::reconfigure before packaging:no"
+    cp_copy_hash PKGOPTS CFGOPTS
     PKGOPTS[I]="PKGSRC_INSTALL::install package:no"
 fi
 

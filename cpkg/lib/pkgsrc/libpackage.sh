@@ -75,14 +75,23 @@ function lp_build_package() {
     [[ -d "$DIR" ]] || cp_error "invalid package directory: $DIR"
 
     cd $DIR
+
     sudo bmake distclean
-    sudo bmake fetch
-    sudo bmake mdi
+
+    if (($PKGSRC_FULL_UPDATE)); then
+        sudo bmake fetch
+        sudo bmake mdi
+    fi
+
     sudo bmake
-    sudo bmake stage-install CHECK_FILES=no
-    sudo bmake print-PLIST > PLIST
-    pkglint
-    sudo bmake clean
+
+    if (($PKGSRC_FULL_UPDATE)); then
+        sudo bmake stage-install CHECK_FILES=no
+        sudo bmake print-PLIST > PLIST
+        pkglint
+        sudo bmake clean
+    fi
+
     sudo bmake package
 }
 
