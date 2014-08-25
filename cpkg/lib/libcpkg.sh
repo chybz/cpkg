@@ -49,6 +49,7 @@ PROG=${ME:-"utility"}
 PROGTAG="$PROG: "
 CPKG_LIB="${BASH_SOURCE[0]}"
 CPKG_LIBDIR=$(dirname $CPKG_LIB)
+CPKG_ETCDIR=""
 
 RSYNC=rsync
 RSYNC_OPTS="-avq"
@@ -143,11 +144,21 @@ function cp_init() {
     fi
 
     export CPKG_DIST CPKG_TYPE CPKG_CODENAME CPKG_PREFIX CPKG_NATIVE
-    export CPKG_HOME=$HOME/.cpkg
+    export CPKG_HOME=$HOME/.cpkg CPKG_ETCDIR
 
     if [ -z "$LIBCPKG_MINIMAL" ]; then
         [[ -f $CPKG_CONF ]] && . $CPKG_CONF
         . $CPKG_LIBDIR/libcpkg-utils.sh
+        . $CPKG_LIBDIR/$CPKG_TYPE/sys_vars.sh
+
+        if [[ $CPKG_LIBDIR =~ ^$CPKG_PREFIX ]]; then
+            CPKG_ETCDIR=$PKG_SYSETCDIR
+        else
+            CPKG_ETCDIR=$(cd $CPKG_LIBDIR/../etc && pwd)
+        fi
+
+        CPKG_ETCDIR+="/cpkg"
+
         . $CPKG_LIBDIR/libpackage.sh
     else
         unset LIBCPKG_MINIMAL

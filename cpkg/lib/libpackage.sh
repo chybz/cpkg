@@ -36,16 +36,8 @@ function lp_create_interface() {
 lp_create_interface
 
 function lp_load_conf() {
-    local DIR
-
-    if [[ -n "$ETCDIR" ]]; then
-        DIR=$ETCDIR
-    else
-        DIR=$PKG_ETCDIR
-    fi
-
-    if [ -f $DIR/package/$CPKG_TYPE.conf ]; then
-        . $DIR/package/$CPKG_TYPE.conf
+    if [ -f $CPKG_ETCDIR/package/$CPKG_TYPE.conf ]; then
+        . $CPKG_ETCDIR/package/$CPKG_TYPE.conf
     fi
 }
 
