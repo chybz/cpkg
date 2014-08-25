@@ -77,12 +77,8 @@ function lp_build_package() {
     cd $DIR
 
     sudo bmake distclean
-
-    if (($PKGSRC_FULL_UPDATE)); then
-        sudo bmake fetch
-        sudo bmake mdi
-    fi
-
+    sudo bmake fetch
+    sudo bmake mdi
     sudo bmake
 
     if (($PKGSRC_FULL_UPDATE)); then
