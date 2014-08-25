@@ -152,12 +152,10 @@ function cp_init() {
         . $CPKG_LIBDIR/$CPKG_TYPE/sys_vars.sh
 
         if [[ $CPKG_LIBDIR =~ ^$CPKG_PREFIX ]]; then
-            CPKG_ETCDIR=$PKG_SYSETCDIR
+            CPKG_ETCDIR=$PKG_SYSETCDIR/cpkg
         else
             CPKG_ETCDIR=$(cd $CPKG_LIBDIR/../etc && pwd)
         fi
-
-        CPKG_ETCDIR+="/cpkg"
 
         . $CPKG_LIBDIR/libpackage.sh
     else
