@@ -137,7 +137,7 @@ function cp_file_hash() {
         POS=1
         ;;
 
-        MacOSX)
+        Darwin)
         MD5=/usr/pkg/bin/digest
         MD5ARGS=md5
         POS=4
@@ -157,7 +157,7 @@ function cp_run_sed() {
         /usr/bin/sed -r "$@"
         ;;
 
-        MacOSX)
+        Darwin)
         /usr/bin/sed -E "$@"
         ;;
     esac
@@ -169,7 +169,7 @@ function cp_run_sedi() {
         /usr/bin/sed -i"" -r "$@"
         ;;
 
-        MacOSX)
+        Darwin)
         /usr/bin/sed -i "" -E "$@"
         ;;
     esac
@@ -201,7 +201,7 @@ function cp_find_re_rel() {
             )
             ;;
 
-            MacOSX)
+            Darwin)
             FILES=$(
                 find -E $DIR \
                     -type $TYPE \

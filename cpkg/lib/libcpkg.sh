@@ -125,7 +125,6 @@ function cp_init() {
             if [ -x /usr/bin/sw_vers ]; then
                 CPKG_DIST=$(/usr/bin/sw_vers -productName)
                 CPKG_DIST=${CPKG_DIST/Mac OS X/MacOSX}
-                [[ $CPKG_DIST == "MacOSX" ]] && CPKG_OS="MacOSX"
                 CPKG_TYPE=pkgsrc
                 CPKG_IS_PKGSRC=1
                 CPKG_CODENAME=$CPKG_DIST
