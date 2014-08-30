@@ -224,7 +224,7 @@ function cp_find_rel() {
     local ITEMS
 
     if [ -d $DIR ]; then
-        ITEMS=$(find $DIR -type $TYPE -mindepth 1 | xargs)
+        ITEMS=$(find -L $DIR -type $TYPE -mindepth 1 | xargs)
         ITEMS=${ITEMS//$DIR\/}
     fi
 
