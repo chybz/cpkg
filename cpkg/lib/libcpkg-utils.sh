@@ -203,7 +203,7 @@ function cp_find_re_rel() {
 
             Darwin)
             FILES=$(
-                find -E $DIR \
+                find -E -L $DIR \
                     -type $TYPE \
                     -mindepth 1 \
                     -regex "$RE" | xargs
