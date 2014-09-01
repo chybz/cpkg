@@ -29,7 +29,6 @@ declare -A OPTIONS
 declare -A CPKG_TEMPLATE_DIRS
 declare -A CPKG_OTHER_DIRS
 declare -A CPKG_PKG_MAP
-declare -A CPKG_HEADER_MAP
 declare -A CPKG_PKGCONFIG_MAP
 declare -a CPKG_TMPL_PRE
 declare -a PKG_DEPS
@@ -40,7 +39,7 @@ PACKAGE_DIRS+=" PKG_ETCDIR PKG_SYSETCDIR"
 PACKAGE_DIRS+=" PKG_LIBDIR PKG_SYSLIBDIR PKG_PLUGDIR"
 PACKAGE_DIRS+=" PKG_SHAREDIR PKG_SYSSHAREDIR"
 PACKAGE_DIRS+=" PKG_SOURCEDIR PKG_BUILDDIR PKG_STAGEDIR PKG_SUPPORTDIR"
-PACKAGE_MISC="PKG_ARCH PKG_AUTHOR"
+PACKAGE_MISC="PKG_ARCH PKG_AUTHOR_NAME PKG_AUTHOR_EMAIL"
 CPKG_TMPL_VARS="TOPDIR $PACKAGE_VARS $PACKAGE_DIRS $PACKAGE_MISC"
 export $CPKG_TMPL_VARS PKG_CAT
 VERBOSE=0
@@ -452,7 +451,8 @@ function cp_set_package_variables() {
 
 function cp_set_git_variables() {
     URL=$(git config --local remote.origin.url)
-    PKG_AUTHOR=$(git config user.email)
+    PKG_AUTHOR_EMAIL=$(git config user.email)
+    PKG_AUTHOR_NAME=$(git config user.name)
 
     if [[ $URL =~ github\.com ]]; then
         export PKG_FROM_GH=1
@@ -698,7 +698,7 @@ function cp_process_template() {
 
         if [[ "$LINE" =~ ^%\{Bash\}% ]]; then
             # Verbatim bash block begin
-            if (($INSHBLOCK == 1)); then
+            if (($INSHBLOCK)); then
                 cp_error "line $LINENUM: unclosed previous block"
             else
                 INSHBLOCK=1
@@ -707,21 +707,21 @@ function cp_process_template() {
             continue
         elif [[ "$LINE" =~ ^%\{/Bash\}% ]]; then
             # Verbatim bash block end
-            if (($INSHBLOCK == 0)); then
+            if ((!$INSHBLOCK)); then
                 cp_error "line $LINENUM: no previous opened block"
             else
                 INSHBLOCK=0
             fi
 
             continue
-        elif (($INSHBLOCK == 1)); then
+        elif (($INSHBLOCK)); then
             echo "$LINE" >> $TMPL
             continue
         elif [[ "$LINE" =~ ^%[[:space:]]*$ ]]; then
             # Skip empty lines
             continue
         elif ! [[ "$LINE" =~ ^%[[:space:]]+ ]]; then
-            if (($INBLOCK == 0)); then
+            if ((!$INBLOCK)); then
                 # Start of block
                 INBLOCK=1
                 echo 'cat <<___CPKG_BLOCK_END___' >> $TMPL
@@ -754,7 +754,7 @@ function cp_process_template() {
                 LINE="${LINE/__INLINE_${IDX}__/${INLINES[$IDX]}}"
             done
         else
-            if (($INBLOCK == 1)); then
+            if (($INBLOCK)); then
                 # Close previous block
                 INBLOCK=0
                 echo '___CPKG_BLOCK_END___' >> $TMPL
@@ -769,7 +769,7 @@ function cp_process_template() {
 
     IFS="$OLD_IFS"
 
-    if (($INBLOCK == 1)); then
+    if (($INBLOCK)); then
         # Close previous block
         INBLOCK=0
         echo '___CPKG_BLOCK_END___' >> $TMPL

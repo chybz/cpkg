@@ -34,7 +34,8 @@ function cpkg_configure() {
     lp_configure_package
     cp_process_templates $SHAREDIR/templates/PKG $TOPDIR
 
-    CPKG_TMPL_PRE=("declare -a PKG_DEPS=(\"${PKG_DEPS[@]}\")")
+    local PRE=$(cp_dump_list PKG_DEPS)
+    CPKG_TMPL_PRE+=("$PRE")
     cp_process_templates $PKGTMPL $PKG_ROOTDIR
 }
 

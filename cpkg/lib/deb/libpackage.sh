@@ -7,6 +7,7 @@ HAS_DEBIAN_INIT=0
 
 function lp_init() {
     # Nothing to do
+        return
 }
 
 function lp_prepare_package_directory() {
@@ -42,7 +43,7 @@ function lp_handle_package_files() {
     HAS_SCRIPTS["preinst"]=0
     HAS_SCRIPTS["prerm"]=0
 
-    if [ $HAS_DEBIAN_INIT -ne 0 ]; then
+    if (($HAS_DEBIAN_INIT)); then
         HAS_SCRIPTS["postinst"]=1
         HAS_SCRIPTS["prerm"]=1
         HAS_SCRIPTS["postrm"]=1
@@ -67,12 +68,12 @@ function lp_handle_package_files() {
 
         HAS_SCRIPTS[${DPKG_PHASE}]=1
 
-        wrap_script_for_phase \
+        cp_wrap_script_for_phase \
             $PKG_ROOTDIR/$PKG_PARTNAME.$PHASE \
             $PHASE \
             $CPKG_SCRIPT
 
-        replace_template_var_from_file \
+        cp_replace_template_var_from_file \
             $DPKG_DEST \
             "CPKG_${PHASE^^}" \
             $CPKG_SCRIPT
@@ -87,7 +88,7 @@ function lp_handle_package_files() {
         if [ ${HAS_SCRIPTS[$PHASE]} -eq 0 ]; then
             rm -f $DPKG_SCRIPT
         else
-            process_template $DPKG_SCRIPT
+            cp_process_template $DPKG_SCRIPT
         fi
     done
 
@@ -99,7 +100,7 @@ function lp_handle_package_files() {
     if [ -n "$FILES" ]; then
         for DIR in ${PACKAGE_DIRS}; do
             DIRVAL="${DIR}"
-            reinplace "s,${TAG}${DIR}${TAG},${!DIRVAL},g" $FILES
+            cp_reinplace "s,${TAG}${DIR}${TAG},${!DIRVAL},g" $FILES
         done
     fi
 }
@@ -108,7 +109,7 @@ function lp_clean_packages_scripts() {
     local FILES=$(grep -l "#CPKG_.*" $PKG_ROOTDIR/debian/*)
 
     if [ -n "$FILES" ]; then
-        reinplace "s,#CPKG_.*$,,g" $FILES
+        cp_reinplace "s,#CPKG_.*$,,g" $FILES
     fi
 }
 
@@ -118,6 +119,10 @@ function lp_install_local_package() {
 
 function lp_install_packages() {
     sudo apt-get install $@
+}
+
+function lp_configure_package() {
+    return
 }
 
 function lp_build_header_cache() {

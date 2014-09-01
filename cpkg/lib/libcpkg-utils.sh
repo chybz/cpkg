@@ -32,6 +32,13 @@ function cp_ajoin() {
     fi
 }
 
+function cp_indent() {
+    local PAD="$1"
+    local TEXT="$2"
+
+    echo "$TEXT" | sed -e "s/^/$PAD/g"
+}
+
 function cb_split() {
     local ARR=$1
     local SEP=$2
@@ -154,7 +161,7 @@ function cp_file_hash() {
 function cp_run_sed() {
     case $CPKG_OS in
         Linux)
-        /usr/bin/sed -r "$@"
+        /bin/sed -r "$@"
         ;;
 
         Darwin)
@@ -166,7 +173,7 @@ function cp_run_sed() {
 function cp_run_sedi() {
     case $CPKG_OS in
         Linux)
-        /usr/bin/sed -i"" -r "$@"
+        /bin/sed -i"" -r "$@"
         ;;
 
         Darwin)

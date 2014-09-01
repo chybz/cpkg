@@ -1,18 +1,14 @@
-% append = yes
-% process-and-recall-foreach PACKAGE
-% if [ $CPKG_TEMPLATE_LOOP -eq 0 ]; then
 Source: ##PKG_NAME##
 Section: utils
 Priority: optional
-Maintainer: ##PKG_AUTHOR##
+Maintainer: ##PKG_AUTHOR_EMAIL##
 Build-Depends: debhelper (>= 7), build-essential
 Standards-Version: 3.7.2
-% else
 
 Package: ##PKG_NAME##
 Architecture: ##PKG_ARCH##
-Depends: ##PKG_DEPS##
+Depends: %{ $(cp_ajoin ", " "${PKG_DEPS[@]}") }%
 Description: ##PKG_SHORTDESC##
- ##PKG_LONGDESC##
+% LDESC=$(echo "$PKG_LONGDESC" | sed -e "s/^$/./g")
+%{ $(cp_indent " " "$LDESC") }%
  .
-% fi
