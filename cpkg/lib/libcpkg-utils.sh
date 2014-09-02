@@ -18,7 +18,7 @@ function cp_clean_name() {
     echo ${1//-/_}
 }
 
-function cp_ajoin() {
+function cp_join() {
     local SEP=$1
     shift
 
@@ -39,7 +39,7 @@ function cp_indent() {
     echo "$TEXT" | sed -e "s/^/$PAD/g"
 }
 
-function cb_split() {
+function cp_split() {
     local ARR=$1
     local SEP=$2
     local STR=$3

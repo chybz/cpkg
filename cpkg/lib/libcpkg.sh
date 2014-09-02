@@ -217,7 +217,7 @@ function cp_print_options() {
     cp_copy_hash SPECS $HNAME
 
     for KEY in ${!SPECS[*]}; do
-        cb_split OPTA ":" "${SPECS[${KEY}]}"
+        cp_split OPTA ":" "${SPECS[${KEY}]}"
 
         if [ -n "${OPTA[3]}" ]; then
             if [ "${OPTA[3]}" = "$REQUIRED" ]; then
@@ -287,7 +287,7 @@ function cp_make_optstring() {
     cp_copy_hash SPECS $HNAME
 
     for KEY in ${!SPECS[*]}; do
-        cb_split OPTA ":" "${SPECS[${KEY}]}"
+        cp_split OPTA ":" "${SPECS[${KEY}]}"
         eval "${VNAME}+=\"$KEY\""
 
         if [ -n "${OPTA[1]}" ]; then
@@ -314,7 +314,7 @@ function cp_run_getopts() {
 
     # Set defaults
     for KEY in ${!SPECS[*]}; do
-        cb_split OPTA ":" "${SPECS[${KEY}]}"
+        cp_split OPTA ":" "${SPECS[${KEY}]}"
 
         if [ -n "${OPTA[3]}" ]; then
             OPTVAR="${OPTA[0]}"
@@ -329,7 +329,7 @@ function cp_run_getopts() {
         [[ "$OPT" == "?" ]] && cp_usage
 
         eval "((++${CNAME}))"
-        cb_split OPTA ":" "${SPECS[${OPT}]}"
+        cp_split OPTA ":" "${SPECS[${OPT}]}"
 
         if [ -z "${OPTA[1]}" ]; then
             # Provide a boolean value for flags
@@ -343,7 +343,7 @@ function cp_run_getopts() {
 
     # Check mandatory options were specified
     for KEY in ${!SPECS[*]}; do
-        cb_split OPTA ":" "${SPECS[${KEY}]}"
+        cp_split OPTA ":" "${SPECS[${KEY}]}"
         OPTVAR="${OPTA[0]}"
         OPTVAL=${OPTIONS[${OPTVAR}]}
 

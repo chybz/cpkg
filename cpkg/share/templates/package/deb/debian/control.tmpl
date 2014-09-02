@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: ##PKG_NAME##
 Architecture: ##PKG_ARCH##
-Depends: %{ $(cp_ajoin ", " "${PKG_DEPS[@]}") }%
+Depends: %{ $(cp_join ", " "${PKG_DEPS[@]}") }%
 Description: ##PKG_SHORTDESC##
 % LDESC=$(echo "$PKG_LONGDESC" | sed -e "s/^$/./g")
 %{ $(cp_indent " " "$LDESC") }%
