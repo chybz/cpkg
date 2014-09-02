@@ -93,9 +93,18 @@ function cp_dump_hash() {
 }
 
 function cp_dump_list() {
-    local -a 'VALUES=("${'"$1"'[@]}")'
+    local ID=$1
+    shift
 
-    echo "declare -a $1=("
+    local -a VALUES
+
+    if (($#)); then
+        eval 'VALUES=("$@")'
+    else
+        eval 'VALUES=("${'"$ID"'[@]}")'
+    fi
+
+    echo "declare -a $ID=("
 
     local E
 
