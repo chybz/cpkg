@@ -92,7 +92,7 @@ function lp_handle_package_files() {
         fi
     done
 
-    FILES=$(find $PKG_ROOTDIR/debian -maxdepth 1 -type f | xargs)
+    local FILES=$(find $PKG_ROOTDIR/debian -maxdepth 1 -type f | xargs)
 
     local TAG="##"
     local DIRVAL
@@ -106,7 +106,10 @@ function lp_handle_package_files() {
 }
 
 function lp_clean_packages_scripts() {
-    local FILES=$(grep -l "#CPKG_.*" $PKG_ROOTDIR/debian/*)
+    local FILES=$(
+        find $PKG_ROOTDIR/debian -maxdepth 1 -type f | \
+        xargs grep -l "#CPKG_.*"
+    )
 
     if [ -n "$FILES" ]; then
         cp_reinplace "s,#CPKG_.*$,,g" $FILES
@@ -123,6 +126,21 @@ function lp_install_packages() {
 
 function lp_configure_package() {
     return
+}
+
+function lp_build_package() {
+    cd $PKG_ROOTDIR
+
+    dpkg-buildpackage -b -uc
+
+    cd ..
+
+    cp_msg "checking $PKG_NAME-$PKG_VER"
+
+    lintian \
+        -q \
+        --suppress-tags bad-distribution-in-changes-file \
+        --fail-on-warnings *.changes
 }
 
 function lp_build_header_cache() {

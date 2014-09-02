@@ -16,11 +16,18 @@ build:
 install:
 	$(CPKG) install
 
+% if (($CPKG_IS_DEB)); then
+package:
+	$(CPKG) package
+% fi
+
 update-pkg:
 	$(CPKG) package -P -I
 
+% if (($CPKG_IS_PKGSRC)); then
 update-pkg-full:
 	$(CPKG) package -P -I -f
+% fi
 
 clean:
 	$(CPKG) clean

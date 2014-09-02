@@ -112,7 +112,7 @@ __EOCPKG_DIRS__
                 r $CPKG_DIRS
                 d
             }" $SCRIPT
-            cp_reinplace "s,^#\!.*bash,#\!$PKG_BINDIR/bash," $SCRIPT
+            cp_reinplace "s,^#\!.*bash,#\!$SHELL," $SCRIPT
         done
 
         rm -f $CPKG_DIRS

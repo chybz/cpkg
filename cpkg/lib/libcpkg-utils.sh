@@ -23,12 +23,12 @@ function cp_ajoin() {
     shift
 
     if (($# > 0)); then
-        echo -n $1
+        echo -n "$1"
         shift
     fi
 
     if (($# > 0)); then
-        printf "${SEP}%s" "$@"
+        printf "${SEP}%s" "$*"
     fi
 }
 
@@ -93,22 +93,15 @@ function cp_dump_hash() {
 }
 
 function cp_dump_list() {
-    local ID=$1
-    shift
+    local -a 'VALUES=("${'"$1"'[@]}")'
 
-    local AREF="${ID}[@]"
+    echo "declare -a $1=("
 
-    if (($# == 0)); then
-        set -- "${!AREF}"
-    fi
+    local E
 
-    echo "declare -a $ID=("
-
-    if (($# > 0)); then
-        echo -n "    "
-        cp_ajoin "\n    " "$@"
-        echo
-    fi
+    for E in "${VALUES[@]}"; do
+        echo "\"$E\""
+    done
 
     echo ")"
 }

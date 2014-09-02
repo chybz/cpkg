@@ -53,13 +53,17 @@ function cpkg_install() {
 }
 
 function cpkg_package() {
-    if (($PKGSRC_UPDATE)); then
+    if (($PKG_UPDATE)); then
         cpkg_configure
+
+        if (($CPKG_IS_DEB)); then
+            cpkg_build
+        fi
     fi
 
     lp_build_package
 
-    if (($PKGSRC_INSTALL)); then
+    if (($PKG_INSTALL)); then
         lp_install_local_package
     fi
 }
@@ -84,14 +88,17 @@ if (($CPKG_IS_PKGSRC)); then
     [[ -n "$PKG_CAT" && -n "$PKG_NAME" ]] && PPATH+="/$PKG_CAT/$PKG_NAME"
 
     # Configure options
-    CFGOPTS[P]="PKGSRC_UPDATE::update pkgsrc files in $PPATH:no"
+    CFGOPTS[P]="PKG_UPDATE::update pkgsrc files in $PPATH:no"
     CFGOPTS[p]="PKGSRC_LOCAL_UPDATE::creates local pkgsrc files:no"
     CFGOPTS[f]="PKGSRC_FULL_UPDATE::full update:no"
-
-    # Package options
-    cp_copy_hash PKGOPTS CFGOPTS
-    PKGOPTS[I]="PKGSRC_INSTALL::install package:no"
+elif (($CPKG_IS_DEB)); then
+    CFGOPTS[P]="PKG_UPDATE::update debian packaging files:no"
 fi
+
+# Package options
+cp_copy_hash PKGOPTS CFGOPTS
+
+PKGOPTS[I]="PKG_INSTALL::install package:no"
 
 cp_add_command "configure" CFGOPTS
 cp_add_command "build"

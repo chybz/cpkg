@@ -426,8 +426,8 @@ function cp_delete_bootstrap() {
 function cp_set_package_variables() {
     PKG_ARCH=$(cp_find_arch)
 
-    local PKGDISTDEPSVAR="PKG_DEPS_${CPKG_TYPE}[@]"
-    PKG_DEPS+=(${!PKGDISTDEPSVAR})
+    local S="\${PKG_DEPS_${CPKG_TYPE}[@]}"
+    eval "PKG_DEPS+=(\"$S\")"
 
     local PKGDISTCATVAR="PKG_CATS[${CPKG_TYPE}]"
     PKG_CAT="${!PKGDISTCATVAR}"
@@ -666,7 +666,7 @@ function cp_process_template() {
     local INLINE IDX BEFORE REST
 
     # Set process_templates (parent function) current template options
-    echo "#\!$PKG_BINDIR/bash" > $TMPL
+    echo "#\!$SHELL" > $TMPL
     echo 'set -e' >> $TMPL
     echo "OPTFILE=$TMPL.opts" >> $TMPL
     echo 'declare -A OPTS' >> $TMPL

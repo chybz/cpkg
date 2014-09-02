@@ -62,7 +62,7 @@ function lp_install_packages() {
 }
 
 function lp_configure_package() {
-    if (($PKGSRC_UPDATE)); then
+    if (($PKG_UPDATE)); then
         if cp_has_uncommitted_changes; then
             cp_error "cannot update with uncommited changes"
         fi
