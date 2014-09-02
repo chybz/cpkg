@@ -28,7 +28,7 @@ function cp_ajoin() {
     fi
 
     if (($# > 0)); then
-        printf "${SEP}%s" "$*"
+        printf "${SEP}%s" "$@"
     fi
 }
 
