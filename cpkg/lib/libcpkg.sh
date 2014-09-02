@@ -162,21 +162,6 @@ function cp_init() {
     fi
 }
 
-function cp_make_home() {
-    mkdir -p $CPKG_HOME
-}
-
-cp_init
-
-REQUIRED="__required__"
-LOCKFILE=/tmp/$ME.lock
-CPKG_REINPLACE_FILE=/tmp/cpkg-reinplace.$$
-
-##############################################################################
-#
-# Utility unctions
-#
-##############################################################################
 function cp_check_conf() {
     if [[ -f $CPKG_CONF ]]; then
         PKG_DATE=`date '+%a, %d %b %Y %H:%M:%S %z'`
@@ -198,6 +183,19 @@ function cp_check_conf() {
     fi
 }
 
+function cp_make_home() {
+    mkdir -p $CPKG_HOME
+}
+
+REQUIRED="__required__"
+LOCKFILE=/tmp/$ME.lock
+CPKG_REINPLACE_FILE=/tmp/cpkg-reinplace.$$
+
+##############################################################################
+#
+# Utility unctions
+#
+##############################################################################
 function cp_add_command() {
     local CMD=$1
     local HNAME=$2
@@ -1141,3 +1139,6 @@ function cp_run_support_modules() {
         done
     done
 }
+
+cp_init
+cp_check_conf
