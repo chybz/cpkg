@@ -143,7 +143,7 @@ function lp_build_package() {
         --fail-on-warnings *.changes
 }
 
-function lp_build_header_cache() {
+function build_header_cache() {
     local CACHE=$1
     local CACHENAME=$2
 
@@ -163,7 +163,7 @@ function lp_build_header_cache() {
 
     eval "$CMD" | \
         sort -ur -k 1,1 | \
-        sed -e "s,^usr/include/\($ARCH/\)\?\([^[:space:]]\+\)[[:space:]]\+.\+/\([^/]*\),[\2]=\3,g" \
+        sed -E -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),['\2']='\3',g" \
         >> $CACHE
 
     echo ")" >> $CACHE
@@ -247,6 +247,8 @@ function lp_make_pkg_header_map() {
 
     cp_msg "loading apt header cache"
     . $CACHE
+
+    return 0
 }
 
 function build_pkgconfig_cache() {

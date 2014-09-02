@@ -28,6 +28,7 @@ declare -A OPTSPECS=(
 declare -A OPTIONS
 declare -A CPKG_TEMPLATE_DIRS
 declare -A CPKG_OTHER_DIRS
+declare -A CPKG_HEADER_MAP
 declare -A CPKG_PKG_MAP
 declare -A CPKG_PKGCONFIG_MAP
 declare -a CPKG_TMPL_PRE

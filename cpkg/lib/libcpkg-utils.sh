@@ -194,8 +194,8 @@ function cp_find_re_rel() {
             Linux)
             FILES=$(
                 find $DIR \
-                    -type $TYPE \
                     -mindepth 1 \
+                    -type $TYPE \
                     -regextype posix-extended \
                     -regex "$RE" | xargs
             )
@@ -204,8 +204,8 @@ function cp_find_re_rel() {
             Darwin)
             FILES=$(
                 find -E -L $DIR \
-                    -type $TYPE \
                     -mindepth 1 \
+                    -type $TYPE \
                     -regex "$RE" | xargs
             )
             ;;
@@ -224,7 +224,7 @@ function cp_find_rel() {
     local ITEMS
 
     if [ -d $DIR ]; then
-        ITEMS=$(find -L $DIR -type $TYPE -mindepth 1 | xargs)
+        ITEMS=$(find -L $DIR -mindepth 1 -type $TYPE | xargs)
         ITEMS=${ITEMS//$DIR\/}
     fi
 
