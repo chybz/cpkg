@@ -216,7 +216,11 @@ function cp_print_options() {
 
     cp_copy_hash SPECS $HNAME
 
-    for KEY in ${!SPECS[*]}; do
+    local KEYS="${!SPECS[*]}"
+    KEYS=${KEYS// /$'\n'}
+    KEYS=$(echo -n "$KEYS" | sort)
+
+    for KEY in $KEYS; do
         cp_split OPTA ":" "${SPECS[${KEY}]}"
 
         if [ -n "${OPTA[3]}" ]; then
@@ -312,8 +316,12 @@ function cp_run_getopts() {
     eval "${CNAME}=0"
     OPTIND=0
 
+    local KEYS="${!SPECS[*]}"
+    KEYS=${KEYS// /$'\n'}
+    KEYS=$(echo -n "$KEYS" | sort)
+
     # Set defaults
-    for KEY in ${!SPECS[*]}; do
+    for KEY in $KEYS; do
         cp_split OPTA ":" "${SPECS[${KEY}]}"
 
         if [ -n "${OPTA[3]}" ]; then
