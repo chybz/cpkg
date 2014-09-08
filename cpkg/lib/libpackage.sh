@@ -11,7 +11,6 @@ function lp_create_interface() {
     local -a INTERFACE=(
         lp_init
         lp_prepare_package_directory
-        lp_handle_manpage
         lp_handle_system_file
         lp_handle_package_files
         lp_install_local_package
