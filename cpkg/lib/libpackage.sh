@@ -118,10 +118,14 @@ __EOCPKG_DIRS__
         rm -f $CPKG_DIRS
 
         # Process inlined POD documentation
-        for SCRIPT in `grep -l '=cut' $PKG_STAGEDIR$PKG_BINDIR/*`; do
+        local SCRIPTS=$(grep -l '=cut' $PKG_STAGEDIR$PKG_BINDIR/*)
+
+        [[ -n "$SCRIPTS" ]] && mkdir -p $PKG_ROOTDIR/man
+
+        for SCRIPT in $SCRIPTS; do
             MANPAGE=`basename $SCRIPT`
-            pod2man $SCRIPT $PKG_ROOTDIR/$MANPAGE.1
-            lp_handle_manpage $MANPAGE.1 1
+            pod2man $SCRIPT $PKG_ROOTDIR/man/$MANPAGE.1
+            lp_handle_manpage man/$MANPAGE.1 1
         done
     fi
 
