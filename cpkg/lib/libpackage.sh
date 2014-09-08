@@ -119,24 +119,27 @@ __EOCPKG_DIRS__
 
         # Process inlined POD documentation
         local SCRIPTS=$(grep -l '=cut' $PKG_STAGEDIR$PKG_BINDIR/*)
+        local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man1
 
-        [[ -n "$SCRIPTS" ]] && mkdir -p $PKG_ROOTDIR/man
+        [[ -n "$SCRIPTS" ]] && mkdir -p $MANDIR
 
         for SCRIPT in $SCRIPTS; do
             MANPAGE=`basename $SCRIPT`
-            pod2man $SCRIPT $PKG_ROOTDIR/man/$MANPAGE.1
-            lp_handle_manpage man/$MANPAGE.1 1
+            pod2man $SCRIPT $MANDIR/$MANPAGE.1
         done
     fi
 
     # Build manpages
     if [ -d $PKG_SOURCEDIR/pod ]; then
-        PODS=`find $PKG_SOURCEDIR/pod -name \*.pod | xargs`
+        local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man
+        PODS=$(find $PKG_SOURCEDIR/pod -name \*.pod | xargs)
+
+        [[ -n "$PODS" ]] && mkdir -p $MANDIR
 
         for POD in $PODS; do
-            MANPAGE=`basename $POD .pod`
-            pod2man $POD $PKG_ROOTDIR/$MANPAGE
-            lp_handle_manpage $MANPAGE $(man_section $MANPAGE)
+            MANPAGE=$(basename $POD .pod)
+            MANDIR+="$(man_section $MANPAGE)"
+            pod2man $POD $MANDIR/$MANPAGE
         done
     fi
 

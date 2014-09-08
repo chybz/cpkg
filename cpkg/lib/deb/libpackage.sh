@@ -15,13 +15,6 @@ function lp_prepare_package_directory() {
     touch $PKG_ROOTDIR/TODO
 }
 
-function lp_handle_manpage() {
-    local MANPAGE=$1
-    local MANSECT=$2
-
-    echo $MANPAGE >> $PKG_ROOTDIR/debian/$PKG_NAME.manpages
-}
-
 function lp_handle_system_file() {
     local FILE=$1
     local TYPE=$2
