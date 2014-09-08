@@ -243,6 +243,8 @@ function cp_print_options() {
 
         printf "$FMT" "${OPTA[1]}" "${OPTA[2]}" "${OPTA[3]}"
     done
+
+    return 0
 }
 
 function cp_usage() {
