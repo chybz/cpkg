@@ -85,7 +85,7 @@ function cp_msg() {
 
 function cp_log() {
     if [ -n "$LOGDIR" -a -d "$LOGDIR" ]; then
-        echo `date '+%b %e %T'` "${PROGTAG}$*" >> $LOGDIR/$ME.log
+        echo $(date '+%b %e %T') "${PROGTAG}$*" >> $LOGDIR/$ME.log
 
         if [ -n "$VERBOSE" -a "$VERBOSE" != "0" ]; then
             cp_msg "$*"
@@ -164,7 +164,7 @@ function cp_init() {
 
 function cp_check_conf() {
     if [[ -f $CPKG_CONF ]]; then
-        PKG_DATE=`date '+%a, %d %b %Y %H:%M:%S %z'`
+        PKG_DATE=$(date '+%a, %d %b %Y %H:%M:%S %z')
         cp_ensure_vars_are_set $PACKAGE_VARS
         [[ "$PKG_NAME" == "cpkg" ]] && CPKG_BUILDING_MYSELF=1
         cp_set_scm_variables
@@ -506,7 +506,7 @@ function cp_get_conf_var() {
         VALUE=""
 
         if [ -n "$CONFFILE" -a -f "$CONFFILE" ]; then
-            VALUE="`egrep ^${CONFVAR}= $CONFFILE | cut -d = -f 2`"
+            VALUE="$(egrep ^${CONFVAR}= $CONFFILE | cut -d = -f 2)"
         fi
 
         export "${CONFVAR}"="$VALUE"
@@ -977,7 +977,7 @@ function cp_ensure_dir_is_writable() {
 }
 
 function cp_ensure_i_am_root() {
-    local USERID=`id -u`
+    local USERID=$(id -u)
     [ "$USERID" -eq 0 ] || cp_error "you are not root"
 }
 
