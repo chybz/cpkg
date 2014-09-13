@@ -111,13 +111,20 @@ __EOCPKG_DIRS__
                 r $CPKG_DIRS
                 d
             }" $SCRIPT
-            cp_reinplace "s,^#\!.*bash,#\!$SHELL," $SCRIPT
+        done
+
+        local SCRIPTS
+        SCRIPTS=$(find $PKG_STAGEDIR -type f |  xargs grep -l '#!.*sh')
+
+        for SCRIPT in $SCRIPTS; do
+            # Use full shell path
+            cp_reinplace "s,^#\!.*sh,#\!$SHELL," $SCRIPT
         done
 
         rm -f $CPKG_DIRS
 
         # Process inlined POD documentation
-        local SCRIPTS=$(grep -l '=cut' $PKG_STAGEDIR$PKG_BINDIR/*)
+        SCRIPTS=$(grep -l '=cut' $PKG_STAGEDIR$PKG_BINDIR/*)
         local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man1
 
         [[ -n "$SCRIPTS" ]] && mkdir -p $MANDIR
