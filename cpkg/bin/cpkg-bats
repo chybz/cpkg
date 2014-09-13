@@ -4,7 +4,7 @@ set -e
 
 ##CPKG_DIRS##
 
-exec $SHAREDIR/bats/libexec/bats "$@"
+exec $SHAREDIR/bats/libexec/bats --tap "$@"
 
 ##############################################################################
 #
