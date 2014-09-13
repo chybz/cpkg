@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -e
+
+##CPKG_DIRS##
+
+exec $SHAREDIR/bats/libexec/bats "$@"
+
+##############################################################################
+#
+# POD Documentation
+#
+##############################################################################
+: <<=cut
+=head1 NAME
+
+cpkg-bats - calls cpkg included Bats testing tool
+
+=head1 DESCRIPTION
+
+cpkg-bats is a wrapper around Bats
+
+=head1 SYNOPSIS
+
+  cpkg-bats
+
+=cut
