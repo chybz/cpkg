@@ -29,6 +29,10 @@ fi
 BATS_TEST_DIRNAME="$(dirname "$BATS_TEST_FILENAME")"
 BATS_TEST_NAMES=()
 
+diag() {
+  echo "# $@" >&2
+}
+
 load() {
   local name="$1"
   local filename
