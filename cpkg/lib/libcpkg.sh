@@ -163,24 +163,22 @@ function cp_init() {
 }
 
 function cp_check_conf() {
-    if [[ -f $CPKG_CONF ]]; then
-        PKG_DATE=$(date '+%a, %d %b %Y %H:%M:%S %z')
-        cp_ensure_vars_are_set $PACKAGE_VARS
-        [[ "$PKG_NAME" == "cpkg" ]] && CPKG_BUILDING_MYSELF=1
-        cp_set_scm_variables
+    PKG_DATE=$(date '+%a, %d %b %Y %H:%M:%S %z')
+    cp_ensure_vars_are_set $PACKAGE_VARS
+    [[ "$PKG_NAME" == "cpkg" ]] && CPKG_BUILDING_MYSELF=1
+    cp_set_scm_variables
 
-        PKG_LONGDESC="${PKG_LONGDESC/#*($'\n')/}"
-        PKG_LONGDESC="${PKG_LONGDESC/%*($'\n')/}"
+    PKG_LONGDESC="${PKG_LONGDESC/#*($'\n')/}"
+    PKG_LONGDESC="${PKG_LONGDESC/%*($'\n')/}"
 
-        PKG_SOURCEDIR=$TOPDIR/$PKG_NAME
-        TMPLDIR=$SHAREDIR/templates
-        PKGTMPL=$SHAREDIR/templates/package/$CPKG_TYPE
-        PKG_ROOTDIR=$TOPDIR/$PKG_NAME-$PKG_VER
-        PKG_STAGEDIR=$PKG_ROOTDIR/stage
-        PKG_SUPPORTDIR=$PKG_ROOTDIR/support
+    PKG_SOURCEDIR=$TOPDIR/$PKG_NAME
+    TMPLDIR=$SHAREDIR/templates
+    PKGTMPL=$SHAREDIR/templates/package/$CPKG_TYPE
+    PKG_ROOTDIR=$TOPDIR/$PKG_NAME-$PKG_VER
+    PKG_STAGEDIR=$PKG_ROOTDIR/stage
+    PKG_SUPPORTDIR=$PKG_ROOTDIR/support
 
-        cp_set_package_variables
-    fi
+    cp_set_package_variables
 }
 
 function cp_make_home() {
