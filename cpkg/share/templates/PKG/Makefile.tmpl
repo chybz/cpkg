@@ -16,18 +16,21 @@ build:
 install:
 	$(CPKG) install
 
+clean:
+	rm -rf %{ $PKG_NAME }%-*
 % if (($CPKG_IS_DEB)); then
-package:
+	rm -f *.deb *.changes *.upload
+% fi
+
+% if (($CPKG_IS_DEB)); then
+package: clean
 	$(CPKG) package
 % fi
 
-update-pkg:
+update-pkg: clean
 	$(CPKG) package -P -I
 
 % if (($CPKG_IS_PKGSRC)); then
-update-pkg-full:
+update-pkg-full: clean
 	$(CPKG) package -P -I -f
 % fi
-
-clean:
-	$(CPKG) clean
