@@ -727,6 +727,9 @@ function cp_process_template() {
         elif [[ "$LINE" =~ ^%[[:space:]]*$ ]]; then
             # Skip empty lines
             continue
+        elif [[ "$LINE" =~ ^%# ]]; then
+            # Skip comment lines
+            continue
         elif ! [[ "$LINE" =~ ^%[[:space:]]+ ]]; then
             if ((!$INBLOCK)); then
                 # Start of block
