@@ -17,6 +17,7 @@ TOPDIR=$(pwd)
 export CPKG_CONF=cpkg.conf
 export CPKG_CMD
 export CPKG_BUILDING_MYSELF=0
+export CPKG_DEBUG=0
 
 declare -a COMMANDS
 declare -a CMDSSPECLIST
@@ -525,6 +526,7 @@ function cp_reinplace_template_vars() {
     done
 
     cp_run_sedi -f $CPKG_REINPLACE_FILE $*
+    rm -f $CPKG_REINPLACE_FILE
 }
 
 function cp_extract_block() {
@@ -797,7 +799,9 @@ echo ")" >> $OPTFILE' >> $TMPL
 
     if $TMPL >$TMPL.result 2>$TMPL.log; then
         # Template ran successfully
-        rm -f $TMPL $TMPL.log
+        if ((!$CPKG_DEBUG)); then
+            rm -f $TMPL $TMPL.log
+        fi
     else
         cp_error \
             "template $FROM failed: consult $TMPL and $TMPL.log for details"

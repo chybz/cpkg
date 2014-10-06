@@ -93,6 +93,8 @@ elif (($CPKG_IS_DEB)); then
     CFGOPTS[P]="PKG_UPDATE::update debian packaging files:no"
 fi
 
+CFGOPTS[D]="CPKG_DEBUG::debug mode:no"
+
 # Package options
 cp_copy_hash PKGOPTS CFGOPTS
 
