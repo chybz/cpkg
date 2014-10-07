@@ -126,7 +126,7 @@ __EOCPKG_DIRS__
         # Process inlined POD documentation
         SCRIPTS=$(
             find $PKG_STAGEDIR$PKG_BINDIR -type f | \
-            grep -l '=cut' || true
+            xargs grep -l '=cut' || true
         )
         local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man1
 
