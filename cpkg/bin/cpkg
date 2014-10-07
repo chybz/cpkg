@@ -112,6 +112,12 @@ cp_get_options "$@"
 cp_ensure_file_exists $CPKG_CONF
 cp_ensure_dir_exists $PKG_SOURCEDIR
 
+if ! [[ "$CPKG_CMD" =~ ^(configure|clean)$ ]]; then
+    if [[ ! -d $PKG_ROOTDIR ]]; then
+        cpkg_configure
+    fi
+fi
+
 case $CPKG_CMD in
     configure)
         cpkg_configure

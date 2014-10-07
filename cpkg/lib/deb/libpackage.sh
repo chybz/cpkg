@@ -7,7 +7,7 @@ HAS_DEBIAN_INIT=0
 
 function lp_init() {
     # Nothing to do
-        return
+    return
 }
 
 function lp_prepare_package_directory() {

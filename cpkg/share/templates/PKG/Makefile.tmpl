@@ -23,14 +23,14 @@ clean:
 % fi
 
 % if (($CPKG_IS_DEB)); then
-package: clean
+package: clean build
 	$(CPKG) package
 % fi
 
-update-pkg: clean
+update-pkg: clean build
 	$(CPKG) package -P -I
 
 % if (($CPKG_IS_PKGSRC)); then
-update-pkg-full: clean
+update-pkg-full: clean build
 	$(CPKG) package -P -I -f
 % fi
