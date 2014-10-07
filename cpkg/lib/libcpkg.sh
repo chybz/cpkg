@@ -422,7 +422,7 @@ function cp_delete_bootstrap() {
     if [ -d $PKG_STAGEDIR/$PKG_BINDIR ]; then
         SCRIPTS=$(
             find $PKG_STAGEDIR/$PKG_BINDIR -type f | \
-            xargs grep -l "^# CPKG BOOTSTRAP"
+            xargs grep -l "^# CPKG BOOTSTRAP" || true
         )
 
         for SCRIPT in $SCRIPTS; do

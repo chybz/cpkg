@@ -114,7 +114,7 @@ __EOCPKG_DIRS__
         done
 
         local SCRIPTS
-        SCRIPTS=$(find $PKG_STAGEDIR -type f |  xargs grep -l '#!.*sh')
+        SCRIPTS=$(find $PKG_STAGEDIR -type f | xargs grep -l '#!.*sh' || true)
 
         for SCRIPT in $SCRIPTS; do
             # Use full shell path
@@ -124,7 +124,10 @@ __EOCPKG_DIRS__
         rm -f $CPKG_DIRS
 
         # Process inlined POD documentation
-        SCRIPTS=$(grep -l '=cut' $PKG_STAGEDIR$PKG_BINDIR/*)
+        SCRIPTS=$(
+            find $PKG_STAGEDIR$PKG_BINDIR -type f | \
+            grep -l '=cut' || true
+        )
         local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man1
 
         [[ -n "$SCRIPTS" ]] && mkdir -p $MANDIR
@@ -140,12 +143,24 @@ __EOCPKG_DIRS__
         local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man
         PODS=$(find $PKG_SOURCEDIR/pod -name \*.pod | xargs)
 
-        [[ -n "$PODS" ]] && mkdir -p $MANDIR
-
         for POD in $PODS; do
             MANPAGE=$(basename $POD .pod)
-            MANDIR+="$(man_section $MANPAGE)"
+            MANDIR+="$(cp_man_section $MANPAGE)"
+            mkdir -p $MANDIR
             pod2man $POD $MANDIR/$MANPAGE
+        done
+    fi
+
+    # Handle prebuilt manpages
+    if [ -d $PKG_SOURCEDIR/man ]; then
+        local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR/man
+        MANS=$(find $PKG_SOURCEDIR/man -name \*.[0-9]\* | xargs)
+
+        for MAN in $MANS; do
+            MANPAGE=$(basename $MAN)
+            MANDIR+="$(cp_man_section $MANPAGE)"
+            mkdir -p $MANDIR
+            cp $MAN $MANDIR/
         done
     fi
 
