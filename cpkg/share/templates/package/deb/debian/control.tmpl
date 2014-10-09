@@ -5,10 +5,29 @@ Maintainer: ##PKG_AUTHOR_NAME## <##PKG_AUTHOR_EMAIL##>
 Build-Depends: debhelper (>= 7), build-essential
 Standards-Version: 3.7.2
 
+% if ((${PKG_HAS["BIN"]})); then
 Package: ##PKG_NAME##
 Architecture: ##PKG_ARCH##
 Depends: %{ $(cp_join ", " "${PKG_DEPS[@]}") }%
 Description: ##PKG_SHORTDESC##
-% LDESC=$(echo "$PKG_LONGDESC" | sed -e "s/^$/./g")
+%     LDESC=$(echo "$PKG_LONGDESC" | sed -e "s/^$/./g")
 %{ $(cp_indent " " "$LDESC") }%
  .
+% fi
+% if ((${PKG_HAS["BIN_LIBS"]})); then
+
+Package: lib%{ ${PKG_NAME} }%
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: libraries
+ %{ ${PKG_SHORTDESC} }% shared libraries
+ .
+
+Package: lib%{ ${PKG_NAME} }%-dev
+Section: libdevel
+Architecture: all
+Depends: ${misc:Depends}, lib%{ ${PKG_NAME} }% (= ${binary:Version})
+Description: development files
+ %{ ${PKG_SHORTDESC} }% development headers and files
+ .
+% fi

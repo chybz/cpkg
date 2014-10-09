@@ -18,6 +18,7 @@ export CPKG_CONF=cpkg.conf
 export CPKG_CMD
 export CPKG_BUILDING_MYSELF=0
 export CPKG_DEBUG=0
+CPKG_STATE_DIR=$TOPDIR/.cpkg
 
 declare -a COMMANDS
 declare -a CMDSSPECLIST
@@ -34,11 +35,16 @@ declare -A CPKG_PKG_MAP
 declare -A CPKG_PKGCONFIG_MAP
 declare -a CPKG_TMPL_PRE
 declare -a PKG_DEPS
+
+declare -A PKG_HAS=(
+    [BIN_LIBS]=0
+)
+
 PACKAGE_VARS="PKG_VER PKG_REV PKG_NAME PKG_DATE PKG_SHORTDESC PKG_LONGDESC"
 PACKAGE_DIRS=" PKG_ROOTDIR PKG_BINDIR"
 PACKAGE_DIRS+=" PKG_MANDIR PKG_VARDIR PKG_LOGDIR PKG_RUNDIR"
 PACKAGE_DIRS+=" PKG_ETCDIR PKG_SYSETCDIR"
-PACKAGE_DIRS+=" PKG_LIBDIR PKG_SYSLIBDIR PKG_PLUGDIR"
+PACKAGE_DIRS+=" PKG_LIBDIR PKG_SYSLIBDIR PKG_INCDIR PKG_PCDIR PKG_PLUGDIR"
 PACKAGE_DIRS+=" PKG_SHAREDIR PKG_SYSSHAREDIR"
 PACKAGE_DIRS+=" PKG_SOURCEDIR PKG_BUILDDIR PKG_STAGEDIR PKG_SUPPORTDIR"
 PACKAGE_MISC="PKG_ARCH PKG_AUTHOR_NAME PKG_AUTHOR_EMAIL"
@@ -398,7 +404,7 @@ function cp_find_arch() {
     local ARCH="all"
     local DIR
 
-    for DIR in bin lib; do
+    for DIR in bin lib _lib; do
         if [ ! -d $PKG_SOURCEDIR/$DIR ]; then
             continue
         fi
@@ -409,6 +415,10 @@ function cp_find_arch() {
             xargs file | \
             egrep "ELF (32|64)-bit"
         )
+
+        if [[ $DIR == "_lib" && -n "$BIN" ]]; then
+            PKG_HAS[BIN_LIBS]=1
+        fi
 
         if [ -n "$BIN" ]; then
             ARCH="any"
@@ -442,6 +452,8 @@ function cp_set_package_variables() {
 
     CPKG_OTHER_DIRS["bin"]=$PKG_BINDIR
     CPKG_OTHER_DIRS["lib"]=$PKG_LIBDIR
+    CPKG_OTHER_DIRS["pkgconfig"]=$PKG_PCDIR
+    CPKG_OTHER_DIRS["include"]=$PKG_INCDIR
     CPKG_OTHER_DIRS["_lib"]=$PKG_SYSLIBDIR
     CPKG_OTHER_DIRS["share"]=$PKG_SHAREDIR
     CPKG_OTHER_DIRS["_share"]=$PKG_SYSSHAREDIR
@@ -686,6 +698,10 @@ function cp_process_template() {
     fi
 
     echo ". $CPKG_LIBDIR/libcpkg-utils.sh" >> $TMPL
+
+    if [[ -f $CPKG_STATE_DIR/PKG/HAS ]]; then
+        echo ". $CPKG_STATE_DIR/PKG/HAS" >> $TMPL
+    fi
 
     if ((${#CPKG_TMPL_PRE[@]})); then
         local PRE
@@ -1153,6 +1169,28 @@ function cp_run_support_modules() {
             fi
         done
     done
+}
+
+function cp_configure_package() {
+    if [[ -d $PKG_SOURCEDIR/bin ]]; then
+        PKG_HAS[BIN]=1
+    fi
+
+    if [ -d $PKG_SOURCEDIR/_lib ]; then
+        local BIN=$(
+            find $PKG_SOURCEDIR/_lib -type f | \
+            egrep -v "\.(svn|git)" | \
+            xargs file | \
+            egrep "ELF (32|64)-bit"
+        )
+
+        if [[ -n "$BIN" ]]; then
+            PKG_HAS[BIN_LIBS]=1
+        fi
+    fi
+
+    echo $ARCH
+    cp_save_hash "PKG_HAS" $CPKG_STATE_DIR/PKG/HAS
 }
 
 cp_init

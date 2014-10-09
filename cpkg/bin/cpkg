@@ -32,6 +32,7 @@ fi
 ##############################################################################
 function cpkg_configure() {
     lp_configure_package
+    cp_configure_package
     cp_process_templates $SHAREDIR/templates/PKG $TOPDIR
 
     local PRE=$(cp_dump_list PKG_DEPS)

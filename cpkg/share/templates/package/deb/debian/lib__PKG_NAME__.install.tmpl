@@ -1,0 +1,6 @@
+%{Bash}%
+OPTS["process"]=$((${PKG_HAS["BIN_LIBS"]}))
+%{/Bash}%
+% if ((${OPTS["process"]})); then
+usr/lib/lib*.so.*
+% fi

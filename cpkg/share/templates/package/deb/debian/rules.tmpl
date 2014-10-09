@@ -3,3 +3,8 @@
 
 %:
 	dh $@
+
+% if ((${PKG_HAS["BIN_LIBS"]})); then
+override_dh_strip:
+	dh_strip -plib%{ ${PKG_NAME} }%
+% fi

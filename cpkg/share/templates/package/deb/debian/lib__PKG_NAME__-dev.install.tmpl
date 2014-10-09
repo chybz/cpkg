@@ -1,0 +1,8 @@
+%{Bash}%
+OPTS["process"]=$((${PKG_HAS["BIN_LIBS"]}))
+if ((${OPTS["process"]})); then
+%{/Bash}%
+usr/lib/lib*.so
+usr/lib/pkgconfig/*.pc
+usr/include/%{ ${PKG_NAME} }%
+% fi
