@@ -569,15 +569,8 @@ function cp_replace_block() {
     echo -e "$BEGIN\n$*\n$END" > $FILE.cpkg-new
     cp_extract_block $FILE $FILE.cpkg-old "$KEYWORD" "$COMMENT"
 
-    echo "#### OLD"
-    cat $FILE.cpkg-old
-    echo "#### NEW"
-    cat $FILE.cpkg-new
-
     local HNEW=$(cp_file_hash $FILE.cpkg-new)
     local HOLD=$(cp_file_hash $FILE.cpkg-old)
-
-    echo "#### $HOLD $HNEW"
 
     if [ -f "$FILE" ]; then
         if [ -s $FILE.cpkg-old ]; then
