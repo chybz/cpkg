@@ -3,5 +3,6 @@
 
 # CPKG_GITIGNORE BEGIN
 Makefile
+.cpkg
 cpkg-[0-9]*
 # CPKG_GITIGNORE END
