@@ -125,9 +125,38 @@ function make_pkg_providers_cache() {
     rm -f $CACHE.tmp
 }
 
+function build_pkgconfig_filters() {
+    local CACHE=$1
+
+    cp_msg "building pkg-config header filters"
+
+    set +e
+
+    find /usr/pkg/lib/pkgconfig -name \*.pc | while read PC; do
+        pkg-config \
+            --cflags-only-I \
+            --silence-errors \
+            $(basename $PC .pc) | \
+        sed \
+            -e "s/-I//g" \
+            -e "s/ /\n/g" | \
+        grep -v "^$"
+    done | sort | uniq | \
+    sed \
+        -E \
+        -e "s,^/usr/pkg/(include|lib)/,s@[[]," \
+        -e "s,/$,," \
+        -e "s,$,/@[@," \
+        > $CACHE.filters
+
+    set -e
+}
+
 function build_header_cache() {
     local CACHE=$1
     local CACHENAME=$2
+
+    build_pkgconfig_filters $CACHE
 
     cp_msg "building pkgsrc header cache"
 
@@ -136,7 +165,10 @@ function build_header_cache() {
     echo "$CACHENAME=(" > $CACHE
 
     eval "$CMD" | \
-        sed -E -e "s,^([^:]+): /usr/pkg/include/(.*),[\2]=\1,g" \
+        sed \
+            -E \
+            -e "s,^([^:]+): /usr/pkg/include/(.*),[\2]=\1,g" \
+            -f $CACHE.filters \
         >> $CACHE
 
     echo ")" >> $CACHE
