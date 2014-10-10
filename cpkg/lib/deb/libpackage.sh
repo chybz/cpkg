@@ -156,7 +156,7 @@ function build_pkgconfig_filters() {
         grep -v "^$"
     done | sort | uniq | \
     sed \
-        -E \
+        -r \
         -e "s,^/usr/(include|lib)/($ARCH/)?,s@[[]'," \
         -e "s,/$,," \
         -e "s,$,/@['@," \
@@ -188,7 +188,7 @@ function build_header_cache() {
     eval "$CMD" | \
         sort -ur -k 1,1 | \
         sed \
-            -E \
+            -r \
             -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),['\2']='\3',g" \
             -f $CACHE.filters \
         >> $CACHE
