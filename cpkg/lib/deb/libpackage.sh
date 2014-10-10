@@ -136,12 +136,43 @@ function lp_build_package() {
         --fail-on-warnings *.changes
 }
 
+function build_pkgconfig_filters() {
+    local CACHE=$1
+
+    local ARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null)
+
+    cp_msg "building pkg-config header filters"
+
+    set +e
+
+    find /usr/lib -name \*.pc | while read PC; do
+        pkg-config \
+            --cflags-only-I \
+            --silence-errors \
+            $(basename $PC .pc) | \
+        sed \
+            -e "s/-I//g" \
+            -e "s/ /\n/g" | \
+        grep -v "^$"
+    done | sort | uniq | \
+    sed \
+        -E \
+        -e "s,^/usr/(include|lib)/($ARCH/)?,s@[[]'," \
+        -e "s,/$,," \
+        -e "s,$,/@['@," \
+        > $CACHE.filters
+
+    set -e
+}
+
 function build_header_cache() {
     local CACHE=$1
     local CACHENAME=$2
 
     local ARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null)
     local HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+
+    build_pkgconfig_filters $CACHE
 
     cp_msg "building apt header cache"
 
@@ -156,7 +187,10 @@ function build_header_cache() {
 
     eval "$CMD" | \
         sort -ur -k 1,1 | \
-        sed -E -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),['\2']='\3',g" \
+        sed \
+            -E \
+            -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),['\2']='\3',g" \
+            -f $CACHE.filters \
         >> $CACHE
 
     echo ")" >> $CACHE
