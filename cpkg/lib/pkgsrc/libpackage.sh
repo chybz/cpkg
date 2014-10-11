@@ -140,7 +140,8 @@ function build_pkgconfig_filters() {
         sed \
             -e "s/-I//g" \
             -e 's/ /\'$'\n/g' | \
-        grep -v "^$"
+        grep -v "^$" | \
+        grep -v "^/usr/pkg/include$"
     done | sort | uniq | \
     sed \
         -E \
