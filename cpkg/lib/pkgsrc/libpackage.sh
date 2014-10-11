@@ -139,7 +139,7 @@ function build_pkgconfig_filters() {
             $(basename $PC .pc) | \
         sed \
             -e "s/-I//g" \
-            -e "s/ /\\n/g" | \
+            -e 's/ /\'$'\n/g' | \
         grep -v "^$"
     done | sort | uniq | \
     sed \
