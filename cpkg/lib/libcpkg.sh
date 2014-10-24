@@ -340,15 +340,28 @@ function cp_run_getopts() {
         fi
     done
 
-    while getopts "$OPTSTRING" OPT; do
+    while getopts ":$OPTSTRING" OPT; do
         [[ "$OPT" == "?" ]] && cp_usage
+
+        if [[ "$OPT" == ":" ]]; then
+            # Don't fail immediately for missing option argument
+            OPT=$OPTARG
+            OPTARG=""
+        fi
 
         eval "((++${CNAME}))"
         cp_split OPTA ":" "${SPECS[${OPT}]}"
 
-        if [ -z "${OPTA[1]}" ]; then
+        if [[ -z "${OPTA[1]}" ]]; then
             # Provide a boolean value for flags
             OPTARG=1
+        elif [[ -z "$OPTARG" ]]; then
+            if [[ -n "${OPTA[3]}" ]]; then
+                # Use default argument
+                OPTARG="${OPTA[3]}"
+            else
+                cp_usage "option -$OPT requires an argument"
+            fi
         fi
 
         OPTVAR="${OPTA[0]}"
