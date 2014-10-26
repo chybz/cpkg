@@ -59,6 +59,7 @@ function lp_install_local_package() {
 
 function lp_install_packages() {
     sudo pkgin install $@
+    lp_make_pkg_map
 }
 
 function lp_configure_package() {
