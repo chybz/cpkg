@@ -492,7 +492,7 @@ function cp_set_git_variables() {
         export PKG_GH_COMMIT=$(git log --pretty=format:'%H' -n 1)
         export PKG_GH_URL=$(echo $URL | cut -d : -f 2)
         export PKG_GH_HOST=$(echo $URL | cut -d : -f 1)
-        PKG_GH_HOST=$(echo PKG_GH_HOST | cut -d @ -f 2)
+        PKG_GH_HOST=$(echo $PKG_GH_HOST | cut -d @ -f 2)
         PKG_GH_URL=${PKG_GH_URL%\.git}
         PKG_GH_PROTO="http"
 
