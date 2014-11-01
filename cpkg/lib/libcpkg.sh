@@ -493,6 +493,7 @@ function cp_set_git_variables() {
         export PKG_GIT_REPO=$(echo $URL | cut -d : -f 2)
         export PKG_GIT_HOST=$(echo $URL | cut -d : -f 1)
         PKG_GIT_HOST=$(echo $PKG_GIT_HOST | cut -d @ -f 2)
+        export PKG_GIT_URL
         export PKG_GIT_FETCH_URL
 
         if [[ $URL =~ github\.com ]]; then
