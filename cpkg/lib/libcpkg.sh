@@ -487,12 +487,20 @@ function cp_set_git_variables() {
     PKG_AUTHOR_EMAIL=$(git config user.email)
     PKG_AUTHOR_NAME=$(git config user.name)
 
-    if [[ $URL =~ github\.com ]]; then
+    if [[ $URL =~ ^git@ ]]; then
         export PKG_FROM_GH=1
         export PKG_GH_COMMIT=$(git log --pretty=format:'%H' -n 1)
-        export PKG_GH_URL=${URL#git@github.com:}
+        export PKG_GH_URL=$(echo $URL | cut -d : -f 2)
+        export PKG_GH_HOST=$(echo $URL | cut -d : -f 1)
+        PKG_GH_HOST=$(echo PKG_GH_HOST | cut -d @ -f 2)
         PKG_GH_URL=${PKG_GH_URL%\.git}
-        PKG_GH_URL="https://github.com/$PKG_GH_URL"
+        PKG_GH_PROTO="http"
+
+        if [[ $URL =~ github\.com ]]; then
+            PKG_GH_PROTO="https"
+        fi
+
+        PKG_GH_URL="$PKG_GH_PROTO://$PKG_GH_HOST/$PKG_GH_URL"
     fi
 }
 
