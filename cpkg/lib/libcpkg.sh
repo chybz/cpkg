@@ -496,12 +496,14 @@ function cp_set_git_variables() {
         PKG_GH_URL=${PKG_GH_URL%\.git}
 
         # Assume private repository served by GitList
-        PKG_GH_PROTO="http"
+        PKG_GH_PROTO="-http"
         export PKG_GH_DIR="zipball"
+        export PKG_GH_SUBDIR=0
 
         if [[ $URL =~ github\.com ]]; then
             PKG_GH_PROTO="https"
             PKG_GH_DIR="archive"
+            PKG_GH_SUBDIR=1
         else
             PKG_GH_URL+=".git"
         fi
