@@ -89,7 +89,6 @@ if (($CPKG_IS_PKGSRC)); then
     # Configure options
     CFGOPTS[P]="PKG_UPDATE::update pkgsrc files in $PPATH:no"
     CFGOPTS[p]="PKGSRC_LOCAL_UPDATE::creates local pkgsrc files:no"
-    CFGOPTS[f]="PKGSRC_FULL_UPDATE::full update:no"
 elif (($CPKG_IS_DEB)); then
     CFGOPTS[P]="PKG_UPDATE::update debian packaging files:no"
 fi

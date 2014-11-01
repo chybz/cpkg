@@ -81,14 +81,10 @@ function lp_build_package() {
     sudo bmake fetch
     sudo bmake mdi
     sudo bmake
-
-    if (($PKGSRC_FULL_UPDATE)); then
-        sudo bmake stage-install CHECK_FILES=no
-        sudo bmake print-PLIST > PLIST
-        pkglint
-        sudo bmake clean
-    fi
-
+    sudo bmake stage-install CHECK_FILES=no
+    sudo bmake print-PLIST > PLIST
+    sudo bmake install-clean
+    pkglint
     sudo bmake package
 }
 

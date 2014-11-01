@@ -29,8 +29,3 @@ package: clean build
 
 update-pkg: clean build
 	$(CPKG) package -P -I
-
-% if (($CPKG_IS_PKGSRC)); then
-update-pkg-full: clean build
-	$(CPKG) package -P -I -f
-% fi
