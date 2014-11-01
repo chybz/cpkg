@@ -488,27 +488,24 @@ function cp_set_git_variables() {
     PKG_AUTHOR_NAME=$(git config user.name)
 
     if [[ $URL =~ ^git@ ]]; then
-        export PKG_FROM_GH=1
-        export PKG_GH_COMMIT=$(git log --pretty=format:'%H' -n 1)
-        export PKG_GH_URL=$(echo $URL | cut -d : -f 2)
-        export PKG_GH_HOST=$(echo $URL | cut -d : -f 1)
-        PKG_GH_HOST=$(echo $PKG_GH_HOST | cut -d @ -f 2)
-        PKG_GH_URL=${PKG_GH_URL%\.git}
-
-        # Assume private repository served by GitList
-        PKG_GH_PROTO="-http"
-        export PKG_GH_DIR="zipball"
-        export PKG_GH_SUBDIR=0
+        export PKG_FROM_GIT=1
+        export PKG_GIT_COMMIT=$(git log --pretty=format:'%H' -n 1)
+        export PKG_GIT_REPO=$(echo $URL | cut -d : -f 2)
+        export PKG_GIT_HOST=$(echo $URL | cut -d : -f 1)
+        PKG_GIT_HOST=$(echo $PKG_GIT_HOST | cut -d @ -f 2)
+        export PKG_GIT_FETCH_URL
 
         if [[ $URL =~ github\.com ]]; then
-            PKG_GH_PROTO="https"
-            PKG_GH_DIR="archive"
-            PKG_GH_SUBDIR=1
+            export PKG_FROM_GITHUB=1
+            PKG_GIT_SUBDIR=1
+            PKG_GIT_URL="https://$PKG_GIT_HOST/$PKG_GIT_REPO"
+            PKG_GIT_FETCH_URL="$PKG_GIT_URL/archive"
         else
-            PKG_GH_URL+=".git"
+            # Assume private repository served by GitList
+            export PKG_FROM_GITLIST=1
+            PKG_GIT_URL="http://$PKG_GIT_HOST/$PKG_GIT_REPO"
+            PKG_GIT_FETCH_URL="-$PKG_GIT_URL.git/zipball/$PKG_GIT_COMMIT"
         fi
-
-        PKG_GH_URL="$PKG_GH_PROTO://$PKG_GH_HOST/$PKG_GH_URL"
     fi
 }
 
