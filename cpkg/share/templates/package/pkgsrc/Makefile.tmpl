@@ -10,12 +10,14 @@
 
 PKGNAME=	%{ ${PKG_NAME} }%-%{ ${PKG_VER} }%
 CATEGORIES=	%{ ${PKG_CAT} }%
-% if (($PKG_FROM_GH)); then
-HOMEPAGE=	%{ ${PKG_GH_URL} }%
-GHCOMMIT=	%{ ${PKG_GH_COMMIT} }%
-DISTNAME=	${GHCOMMIT}.zip
-MASTER_SITES=	%{ ${PKG_GH_URL} }%/%{ ${PKG_GH_DIR} }%/
+% if (($PKG_FROM_GIT)); then
+HOMEPAGE=	%{ ${PKG_GIT_URL} }%
+GITCOMMIT=	%{ ${PKG_GIT_COMMIT} }%
+DISTNAME=	${GITCOMMIT}.zip
+MASTER_SITES=	%{ ${PKG_GIT_FETCH_URL} }
+%     if (($PKG_FROM_GITHUB)); then
 DIST_SUBDIR=	%{ ${PKG_NAME} }%
+%     fi
 % fi
 EXTRACT_SUFX=	# none
 
@@ -29,7 +31,7 @@ DEPENDS+=	%{ $DEP }%
 %     done
 % fi
 
-WRKSRC=		${WRKDIR}/%{ ${PKG_NAME} }%-${GHCOMMIT}
+WRKSRC=		${WRKDIR}/%{ ${PKG_NAME} }%-${GITCOMMIT}
 % CFGFILES=$(cp_find_rel $PKG_SOURCEDIR/etc)
 % if [[ -n "$CFGFILES" ]]; then
 
