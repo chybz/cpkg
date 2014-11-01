@@ -493,15 +493,17 @@ function cp_set_git_variables() {
         export PKG_GH_URL=$(echo $URL | cut -d : -f 2)
         export PKG_GH_HOST=$(echo $URL | cut -d : -f 1)
         PKG_GH_HOST=$(echo $PKG_GH_HOST | cut -d @ -f 2)
+        PKG_GH_URL=${PKG_GH_URL%\.git}
 
         # Assume private repository served by GitList
         PKG_GH_PROTO="http"
         export PKG_GH_DIR="zipball"
 
         if [[ $URL =~ github\.com ]]; then
-            PKG_GH_URL=${PKG_GH_URL%\.git}
             PKG_GH_PROTO="https"
             PKG_GH_DIR="archive"
+        else
+            PKG_GH_URL+=".git"
         fi
 
         PKG_GH_URL="$PKG_GH_PROTO://$PKG_GH_HOST/$PKG_GH_URL"
