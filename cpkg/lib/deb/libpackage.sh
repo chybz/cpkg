@@ -361,31 +361,3 @@ function lp_get_pkgconfig() {
 
     env PKG_CONFIG_PATH=$PCPATH pkg-config $@ $PC
 }
-
-function lp_find_c_lib() {
-    local HINT=$1
-
-    local -a MATCHES
-    local MATCH
-    local LINES=$(
-        apt-cache search -n "${HINT}.*dev" | \
-        cut -d ' ' -f 1
-    )
-
-    local -a ITEMS
-
-    while read PKG; do
-        MATCHES+=($PKG)
-
-        if [[ $PKG =~ ^lib${HINT}.*-dev ]]; then
-            MATCH=$PKG
-            break
-        fi
-    done <<<"$LINES"
-
-    if [ -n "$MATCH" ]; then
-        echo $MATCH
-    else
-        echo ${MATCHES[@]}
-    fi
-}

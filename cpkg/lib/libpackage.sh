@@ -21,7 +21,6 @@ function lp_create_interface() {
         lp_make_pkg_header_map
         lp_make_pkgconfig_map
         lp_get_pkgconfig
-        lp_find_c_lib
         lp_clean_packages_scripts
     )
 
