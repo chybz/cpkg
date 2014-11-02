@@ -245,3 +245,17 @@ function lp_get_pkgconfig() {
 
     env PKG_CONFIG_PATH=$PCPATH pkg-config $@ $PC
 }
+
+function lp_full_pkg_name() {
+    local PKG=$1
+
+    local FULLPKG=$(
+        sqlite3 \
+            /var/db/pkgin/pkgin.db \
+            "select FULLPKGNAME from [REMOTE_PKG] where PKGNAME='$PKG'"
+    )
+
+    [[ -n "$FULLPKG" ]] || FULLPKG=$PKG
+
+    echo $FULLPKG
+}

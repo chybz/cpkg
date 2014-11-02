@@ -361,3 +361,9 @@ function lp_get_pkgconfig() {
 
     env PKG_CONFIG_PATH=$PCPATH pkg-config $@ $PC
 }
+
+function lp_full_pkg_name() {
+    local PKG=$1
+
+    echo $PKG
+}

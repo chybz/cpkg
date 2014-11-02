@@ -22,6 +22,7 @@ function lp_create_interface() {
         lp_make_pkgconfig_map
         lp_get_pkgconfig
         lp_clean_packages_scripts
+        lp_full_pkg_name
     )
 
     local F
