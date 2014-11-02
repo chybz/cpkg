@@ -501,12 +501,12 @@ function cp_set_git_variables() {
             PKG_GIT_SUBDIR=1
             PKG_GIT_REPO=${PKG_GIT_REPO%\.git}
             PKG_GIT_URL="https://$PKG_GIT_HOST/$PKG_GIT_REPO"
-            PKG_GIT_FETCH_URL="$PKG_GIT_URL/archive"
+            PKG_GIT_FETCH_URL="$PKG_GIT_URL/archive/"
         else
             # Assume private repository served by GitList
             export PKG_FROM_GITLIST=1
             PKG_GIT_URL="http://$PKG_GIT_HOST/$PKG_GIT_REPO"
-            PKG_GIT_FETCH_URL="$PKG_GIT_URL.git/zipball"
+            PKG_GIT_FETCH_URL="-$PKG_GIT_URL.git/zipball/$PKG_GIT_COMMIT"
         fi
     fi
 }
