@@ -192,6 +192,10 @@ function cp_make_home() {
     mkdir -p $CPKG_HOME
 }
 
+function cp_clear_home() {
+    rm -rf $CPKG_HOME
+}
+
 REQUIRED="__required__"
 LOCKFILE=/tmp/$ME.lock
 CPKG_REINPLACE_FILE=/tmp/cpkg-reinplace.$$
