@@ -182,7 +182,10 @@ function build_header_cache() {
     sed -E -i "" -f $CACHE.filters $CACHE.installed
 
     echo "$CACHENAME=(" > $CACHE
+    cat $CACHE.uninstalled $CACHE.installed | sort | uniq >> $CACHE
     echo ")" >> $CACHE
+
+    rm -f $CACHE.uninstalled $CACHE.installed
 }
 
 function lp_make_pkg_header_map() {
