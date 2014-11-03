@@ -101,6 +101,7 @@ function make_pkg_providers_cache() {
     local DIR=$1
     local CACHE=$2
     local EXPR=$3
+    local HASH_MODE=$4
 
     local PKG
 
@@ -111,13 +112,23 @@ function make_pkg_providers_cache() {
             -e "s,Information for,PACKAGE,g" \
         > $CACHE.tmp
 
-    while read LINE; do
-        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
-            PKG="${BASH_REMATCH[1]}"
-        else
-            echo "$LINE $PKG"
-        fi
-    done < $CACHE.tmp > $CACHE
+    if (($HASH_MODE)); then
+        while read LINE; do
+            if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
+                PKG="${BASH_REMATCH[1]}"
+            else
+                echo "[$LINE]=$PKG"
+            fi
+        done < $CACHE.tmp > $CACHE
+    else
+        while read LINE; do
+            if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
+                PKG="${BASH_REMATCH[1]}"
+            else
+                echo "$LINE $PKG"
+            fi
+        done < $CACHE.tmp > $CACHE
+    fi
 
     rm -f $CACHE.tmp
 }
@@ -160,15 +171,16 @@ function build_header_cache() {
 
     local CMD='pkgin sef "^/usr/pkg/include"'
 
-    echo "$CACHENAME=(" > $CACHE
-
     eval "$CMD" | \
         sed \
             -E \
             -e "s,^([^:]+): /usr/pkg/include/(.*),[\2]=\1,g" \
             -f $CACHE.filters \
-        >> $CACHE
+        > $CACHE.uninstalled
 
+    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed ".*\.h.*"
+
+    echo "$CACHENAME=(" > $CACHE
     echo ")" >> $CACHE
 }
 
@@ -188,8 +200,6 @@ function lp_make_pkg_header_map() {
     if (($BUILD == 1)); then
         build_header_cache $CACHE "CPKG_HEADER_MAP"
     fi
-
-    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed ".*\.h.*"
 
     cp_msg "loading pkgsrc header cache"
     . $CACHE
