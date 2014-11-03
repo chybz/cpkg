@@ -189,6 +189,8 @@ function lp_make_pkg_header_map() {
         build_header_cache $CACHE "CPKG_HEADER_MAP"
     fi
 
+    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed ".*\.h.*"
+
     cp_msg "loading pkgsrc header cache"
     . $CACHE
 }
