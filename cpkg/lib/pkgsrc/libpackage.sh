@@ -178,7 +178,7 @@ function build_header_cache() {
             -f $CACHE.filters \
         > $CACHE.uninstalled
 
-    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed ".*\.h.*"
+    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed ".*\.h.*" 1
 
     echo "$CACHENAME=(" > $CACHE
     echo ")" >> $CACHE
