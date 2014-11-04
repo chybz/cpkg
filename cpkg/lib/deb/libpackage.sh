@@ -114,7 +114,8 @@ function lp_install_local_package() {
 }
 
 function lp_install_packages() {
-    sudo apt-get install $@
+    export DEBIAN_FRONTEND=noninteractive
+    sudo apt-get -y install $@
     lp_make_pkg_map
 }
 
@@ -184,17 +185,28 @@ function build_header_cache() {
         CMD+=' | grep -v libc6-dev-i386'
     fi
 
-    echo "$CACHENAME=(" > $CACHE
-
     eval "$CMD" | \
         sort -ur -k 1,1 | \
         sed \
             -r \
             -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),['\2']='\3',g" \
             -f $CACHE.filters \
-        >> $CACHE
+        > $CACHE.repo
 
+    find /usr/include -type f -name \*.h\* | \
+        xargs dpkg -S 2>&1 | \
+        grep -v "^dpkg-query: " | \
+        sed \
+            -r \
+            -e "s,^([^[:space:]:]+):([^[:space:]]*) /usr/include/([^[:space:]]+)$,['\3']='\1',g" \
+            -f $CACHE.filters \
+        > $CACHE.installed
+
+    echo "$CACHENAME=(" > $CACHE
+    cat $CACHE.repo $CACHE.installed | sort | uniq >> $CACHE
     echo ")" >> $CACHE
+
+    rm -f $CACHE.repo $CACHE.installed
 }
 
 function apt_file_update() {
