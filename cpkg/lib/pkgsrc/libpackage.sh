@@ -178,8 +178,9 @@ function build_header_cache() {
             -f $CACHE.filters \
         > $CACHE.uninstalled
 
-    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed ".*\.h.*" 1
-    sed -E -i "" -f $CACHE.filters $CACHE.installed
+    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed.tmp ".*\.h.*" 1
+    sed -E -f $CACHE.filters < $CACHE.installed.tmp > $CACHE.installed
+    rm -f $CACHE.installed.tmp
 
     echo "$CACHENAME=(" > $CACHE
     cat $CACHE.uninstalled $CACHE.installed | sort | uniq >> $CACHE
