@@ -273,7 +273,7 @@ function lp_make_pkg_header_map() {
            fi
         done
 
-        for REFFILE in /var/cache/apt/apt-file/*.gz; do
+        for REFFILE in /var/cache/apt/apt-file/*.gz /var/lib/dpkg/status; do
             if [ $REFFILE -nt $CACHE ]; then
                 BUILD=1
                 break
