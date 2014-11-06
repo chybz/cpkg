@@ -89,6 +89,8 @@ function lp_build_package() {
 }
 
 function lp_make_pkg_map() {
+    cp_make_home
+
     local CACHE=$CPKG_HOME/packages.cache
 
     rm -f $CACHE
