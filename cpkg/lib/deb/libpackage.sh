@@ -253,24 +253,6 @@ function lp_make_pkg_map() {
     fi
 }
 
-function lp_is_pkg_installed() {
-    local PKG=$1
-
-    local INSTALLED=${CPKG_PKG_MAP[$PKG]}
-
-    if [[ -z "$INSTALLED" ]]; then
-        if cdb -q -m $CPKG_HOME/packages.cache $PKG >/dev/null; then
-            INSTALLED=0
-        else
-            INSTALLED=1
-        fi
-
-        CPKG_PKG_MAP[$PKG]=$INSTALLED
-    fi
-
-    return $INSTALLED
-}
-
 function lp_make_pkg_header_map() {
     cp_make_home
 
@@ -302,12 +284,6 @@ function lp_make_pkg_header_map() {
     fi
 
     return 0
-}
-
-function lp_pkg_from_header() {
-    local HEADER="$1"
-
-    cdb -q -m $CPKG_HOME/headers.cache $HEADER || true
 }
 
 function build_pkgconfig_cache() {
@@ -391,12 +367,6 @@ function lp_make_pkgconfig_map() {
     if (($BUILD == 1)); then
         build_pkgconfig_cache $CACHE
     fi
-}
-
-function lp_pkg_pkgconfigs() {
-    local PKG=$1
-
-    cdb -q -m $CPKG_HOME/pkgconfig.cache $PKG || true
 }
 
 function lp_get_pkgconfig() {

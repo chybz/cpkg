@@ -18,11 +18,8 @@ function lp_create_interface() {
         lp_configure_package
         lp_build_package
         lp_make_pkg_map
-        lp_is_pkg_installed
         lp_make_pkg_header_map
-        lp_pkg_from_header
         lp_make_pkgconfig_map
-        lp_pkg_pkgconfigs
         lp_get_pkgconfig
         lp_clean_packages_scripts
         lp_full_pkg_name
@@ -192,4 +189,30 @@ __EOCPKG_DIRS__
     done
 
     lp_handle_package_files
+}
+
+function lp_is_pkg_installed() {
+    local PKG=$1
+
+    local INSTALLED
+
+    if cdb -q -m $CPKG_HOME/packages.cache $PKG >/dev/null; then
+        INSTALLED=0
+    else
+        INSTALLED=1
+    fi
+
+    return $INSTALLED
+}
+
+function lp_pkg_from_header() {
+    local HEADER="$1"
+
+    cdb -q -m $CPKG_HOME/headers.cache $HEADER || true
+}
+
+function lp_pkg_pkgconfigs() {
+    local PKG=$1
+
+    cdb -q -m $CPKG_HOME/pkgconfig.cache $PKG || true
 }

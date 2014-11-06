@@ -89,19 +89,21 @@ function lp_build_package() {
 }
 
 function lp_make_pkg_map() {
-    local -a PKGS=($(pkgin list | cut -d ' ' -f 1))
-    local PKG
+    local CACHE=$CPKG_HOME/packages.cache
 
-    for PKG in ${PKGS[@]}; do
-        CPKG_PKG_MAP[$PKG]=1
-    done
+    rm -f $CACHE
+
+    pkgin list | \
+    sed \
+        -E \
+        -e "s, .*$, 1,g" | \
+        cdb -c -m $CACHE
 }
 
 function make_pkg_providers_cache() {
     local DIR=$1
     local CACHE=$2
     local EXPR=$3
-    local HASH_MODE=$4
 
     local PKG
 
@@ -112,23 +114,13 @@ function make_pkg_providers_cache() {
             -e "s,Information for,PACKAGE,g" \
         > $CACHE.tmp
 
-    if (($HASH_MODE)); then
-        while read LINE; do
-            if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
-                PKG="${BASH_REMATCH[1]}"
-            else
-                echo "[$LINE]=$PKG"
-            fi
-        done < $CACHE.tmp > $CACHE
-    else
-        while read LINE; do
-            if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
-                PKG="${BASH_REMATCH[1]}"
-            else
-                echo "$LINE $PKG"
-            fi
-        done < $CACHE.tmp > $CACHE
-    fi
+    while read LINE; do
+        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
+            PKG="${BASH_REMATCH[1]}"
+        else
+            echo "$LINE $PKG"
+        fi
+    done < $CACHE.tmp > $CACHE
 
     rm -f $CACHE.tmp
 }
@@ -148,14 +140,14 @@ function build_pkgconfig_filters() {
         sed \
             -e "s/-I//g" \
             -e 's/ /\'$'\n/g' | \
-        grep -v "^$" | \
-        grep -v "^/usr/pkg/include$"
+        grep -v "^$"
     done | sort | uniq | \
+    sed -E -e "s,/$,," | \
+    grep -v "^/usr/pkg/include$" | \
     sed \
         -E \
-        -e "s,^/usr/pkg/(include|lib)/,s@[[]," \
-        -e "s,/$,," \
-        -e "s,$,/@[@," \
+        -e "s,^/usr/pkg/(include|lib)/,s@," \
+        -e "s,$,/@@," \
         > $CACHE.filters
 
     set -e
@@ -174,7 +166,7 @@ function build_header_cache() {
     eval "$CMD" | \
         sed \
             -E \
-            -e "s,^([^:]+): /usr/pkg/include/(.*),[\2]=\1,g" \
+            -e "s,^([^:]+): /usr/pkg/include/(.*),\2 \1,g" \
             -f $CACHE.filters \
         > $CACHE.uninstalled
 
@@ -182,9 +174,9 @@ function build_header_cache() {
     sed -E -f $CACHE.filters < $CACHE.installed.tmp > $CACHE.installed
     rm -f $CACHE.installed.tmp
 
-    echo "$CACHENAME=(" > $CACHE
-    cat $CACHE.uninstalled $CACHE.installed | sort | uniq >> $CACHE
-    echo ")" >> $CACHE
+    cat $CACHE.uninstalled $CACHE.installed | \
+        sort | uniq | \
+        cdb -c -m $CACHE
 
     rm -f $CACHE.uninstalled $CACHE.installed
 }
@@ -205,9 +197,6 @@ function lp_make_pkg_header_map() {
     if (($BUILD == 1)); then
         build_header_cache $CACHE "CPKG_HEADER_MAP"
     fi
-
-    cp_msg "loading pkgsrc header cache"
-    . $CACHE
 }
 
 function build_pkgconfig_cache() {
@@ -231,23 +220,28 @@ function lp_make_pkgconfig_map() {
     fi
 
     if (($BUILD == 1)); then
-        build_pkgconfig_cache $CACHE
+        build_pkgconfig_cache $CACHE.tmp
     fi
 
     local PC
     local PKG
+    local -A MAP
 
-    while read PC PKG; do
+    while read PKG PC; do
         PC=${PC%.pc}
 
-        if [[ "${CPKG_PKGCONFIG_MAP[$PKG]}" ]]; then
-            CPKG_PKGCONFIG_MAP[$PKG]=" $PC"
+        if [[ "${MAP[$PKG]}" ]]; then
+            MAP[$PKG]=" $PC"
         else
-            CPKG_PKGCONFIG_MAP[$PKG]=$PC
+            MAP[$PKG]=$PC
         fi
+    done < $CACHE.tmp
 
-        CPKG_PC_PKG_MAP[$PC]=$PKG
-    done < $CACHE
+    rm -f $CACHE.tmp
+
+    for PKG in ${!MAP[@]}; do
+        echo "$PKG ${MAP[$PKG]}"
+    done | cdb -c -m $CACHE
 }
 
 function lp_get_pkgconfig() {
