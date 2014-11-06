@@ -159,9 +159,9 @@ function build_pkgconfig_filters() {
     done | sort | uniq | \
     sed \
         -r \
-        -e "s,^/usr/(include|lib)/($ARCH/)?,s@[[]'," \
+        -e "s,^/usr/(include|lib)/($ARCH/)?,s@," \
         -e "s,/$,," \
-        -e "s,$,/@['@," \
+        -e "s,$,/@@," \
         > $CACHE.filters
 
     set -e
@@ -169,7 +169,6 @@ function build_pkgconfig_filters() {
 
 function build_header_cache() {
     local CACHE=$1
-    local CACHENAME=$2
 
     local ARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null)
     local HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
@@ -189,7 +188,7 @@ function build_header_cache() {
         sort -ur -k 1,1 | \
         sed \
             -r \
-            -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),['\2']='\3',g" \
+            -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),\2 \3,g" \
             -f $CACHE.filters \
         > $CACHE.repo
 
@@ -198,13 +197,13 @@ function build_header_cache() {
         grep -v "^dpkg-query: " | \
         sed \
             -r \
-            -e "s,^([^[:space:]:]+):([^[:space:]]*) /usr/include/([^[:space:]]+)$,['\3']='\1',g" \
+            -e "s,^([^[:space:]:]+):([^[:space:]]*) /usr/include/([^[:space:]]+)$,\3 \1,g" \
             -f $CACHE.filters \
         > $CACHE.installed
 
-    echo "$CACHENAME=(" > $CACHE
-    cat $CACHE.repo $CACHE.installed | sort | uniq >> $CACHE
-    echo ")" >> $CACHE
+    cat $CACHE.repo $CACHE.installed \
+        | sort | uniq | \
+        cdb -c -m $CACHE
 
     rm -f $CACHE.repo $CACHE.installed
 }
@@ -229,8 +228,10 @@ function build_pkg_cache() {
 
     dpkg-query -W -f='${Package} ${Version} ${Status}\n' | \
         grep "install ok installed" | \
-        cut -d ' ' -f 1 \
-        > $CACHE
+        sed \
+            -r \
+            -e "s, .*$, 1,g" | \
+        cdb -c -m $CACHE
 }
 
 function lp_make_pkg_map() {
@@ -249,10 +250,24 @@ function lp_make_pkg_map() {
     if (($BUILD == 1)); then
         build_pkg_cache $CACHE
     fi
+}
 
-    while read PKG; do
-        CPKG_PKG_MAP[$PKG]=1
-    done < $CACHE
+function lp_is_pkg_installed() {
+    local PKG=$1
+
+    local INSTALLED=${CPKG_PKG_MAP[$PKG]}
+
+    if [[ -z "$INSTALLED" ]]; then
+        if cdb -q -m $CPKG_HOME/packages.cache $PKG >/dev/null; then
+            INSTALLED=0
+        else
+            INSTALLED=1
+        fi
+
+        CPKG_PKG_MAP[$PKG]=$INSTALLED
+    fi
+
+    return $INSTALLED
 }
 
 function lp_make_pkg_header_map() {
@@ -282,13 +297,16 @@ function lp_make_pkg_header_map() {
     fi
 
     if (($BUILD == 1)); then
-        build_header_cache $CACHE "CPKG_HEADER_MAP"
+        build_header_cache $CACHE
     fi
 
-    cp_msg "loading apt header cache"
-    . $CACHE
-
     return 0
+}
+
+function lp_pkg_from_header() {
+    local HEADER="$1"
+
+    cdb -q -m $CPKG_HOME/headers.cache $HEADER || true
 }
 
 function build_pkgconfig_cache() {
@@ -315,12 +333,34 @@ function build_pkgconfig_cache() {
         dpkg -S ${PKGCONFIG_FILES[@]} 2>&1 | \
             grep -v "^dpkg-query: " | \
             sed \
-                -e "s,: [^[:space:]]\+/pkgconfig/, ,g" \
+                -r \
+                -e "s,: [^[:space:]]+/pkgconfig/, ,g" \
                 -e "s,:$HOST_ARCH,,g" \
-            > $CACHE
+                -e "s,\.pc,,g" \
+                > $CACHE.tmp
     else
-        touch $CACHE
+        touch $CACHE.tmp
     fi
+
+    local PC
+    local PKG
+    local -A MAP
+
+    while read PKG PC; do
+        PC=${PC%.pc}
+
+        if [[ "${MAP[$PKG]}" ]]; then
+            MAP[$PKG]=" $PC"
+        else
+            MAP[$PKG]=$PC
+        fi
+    done < $CACHE.tmp
+
+    rm -f $CACHE.tmp
+
+    for PKG in ${!MAP[@]}; do
+        echo "$PKG ${MAP[$PKG]}"
+    done | cdb -c -m $CACHE
 }
 
 function lp_make_pkgconfig_map() {
@@ -350,19 +390,12 @@ function lp_make_pkgconfig_map() {
     if (($BUILD == 1)); then
         build_pkgconfig_cache $CACHE
     fi
+}
 
-    local PC
-    local PKG
+function lp_pkg_pkgconfigs() {
+    local PKG=$1
 
-    while read PKG PC; do
-        PC=${PC%.pc}
-
-        if [[ "${CPKG_PKGCONFIG_MAP[$PKG]}" ]]; then
-            CPKG_PKGCONFIG_MAP[$PKG]=" $PC"
-        else
-            CPKG_PKGCONFIG_MAP[$PKG]=$PC
-        fi
-    done < $CACHE
+    cdb -q -m $CPKG_HOME/pkgconfig.cache $PKG || true
 }
 
 function lp_get_pkgconfig() {

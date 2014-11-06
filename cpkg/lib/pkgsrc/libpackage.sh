@@ -245,6 +245,8 @@ function lp_make_pkgconfig_map() {
         else
             CPKG_PKGCONFIG_MAP[$PKG]=$PC
         fi
+
+        CPKG_PC_PKG_MAP[$PC]=$PKG
     done < $CACHE
 }
 

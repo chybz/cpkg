@@ -18,8 +18,11 @@ function lp_create_interface() {
         lp_configure_package
         lp_build_package
         lp_make_pkg_map
+        lp_is_pkg_installed
         lp_make_pkg_header_map
+        lp_pkg_from_header
         lp_make_pkgconfig_map
+        lp_pkg_pkgconfigs
         lp_get_pkgconfig
         lp_clean_packages_scripts
         lp_full_pkg_name
