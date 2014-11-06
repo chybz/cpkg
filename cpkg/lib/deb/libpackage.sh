@@ -157,10 +157,11 @@ function build_pkgconfig_filters() {
             -e "s/ /\n/g" | \
         grep -v "^$"
     done | sort | uniq | \
+    sed -r -e "s,/$,," | \
+    egrep -v "^/usr/include$" | \
     sed \
         -r \
         -e "s,^/usr/(include|lib)/($ARCH/)?,s@," \
-        -e "s,/$,," \
         -e "s,$,/@@," \
         > $CACHE.filters
 
