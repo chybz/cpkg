@@ -223,6 +223,8 @@ function lp_make_pkgconfig_map() {
 
     if (($BUILD == 1)); then
         build_pkgconfig_cache $CACHE.tmp
+    else
+        touch $CACHE.tmp
     fi
 
     local PC
