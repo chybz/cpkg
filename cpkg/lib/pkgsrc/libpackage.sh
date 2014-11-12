@@ -205,7 +205,24 @@ function build_pkgconfig_cache() {
     local CACHE=$1
 
     cp_msg "building pkgsrc pkg-config cache"
-    make_pkg_providers_cache "/usr/pkg/lib/pkgconfig" $CACHE ".*\.pc"
+
+    pkg_info -aL | \
+        egrep "^Information|/usr/pkg/lib/pkgconfig/.*\.pc" | \
+        sed \
+            -e "s,/usr/pkg/lib/pkgconfig/,,g" \
+            -e "s,\.pc,,g" \
+            -e "s,Information for,PACKAGE,g" \
+        > $CACHE.tmp
+
+    while read LINE; do
+        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
+            PKG="${BASH_REMATCH[1]}"
+        else
+            echo "$PKG $LINE"
+        fi
+    done < $CACHE.tmp > $CACHE
+
+    rm -f $CACHE.tmp
 }
 
 function lp_make_pkgconfig_map() {
