@@ -95,7 +95,7 @@ function lp_make_pkg_map() {
 
     rm -f $CACHE
 
-    pkgin list | \
+    pkg_info -a | \
     sed \
         -E \
         -e "s, .*$, 1,g" | \
