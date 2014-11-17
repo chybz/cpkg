@@ -212,7 +212,7 @@ function build_pkgconfig_cache() {
             -e "s,/usr/pkg/lib/pkgconfig/,,g" \
             -e "s,\.pc,,g" \
             -e "s,Information for,PACKAGE,g" \
-        > $CACHE.tmp
+        > $CACHE.info
 
     while read LINE; do
         if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
@@ -220,29 +220,9 @@ function build_pkgconfig_cache() {
         else
             echo "$PKG $LINE"
         fi
-    done < $CACHE.tmp > $CACHE
+    done < $CACHE.info > $CACHE.tmp
 
-    rm -f $CACHE.tmp
-}
-
-function lp_make_pkgconfig_map() {
-    cp_make_home
-
-    local CACHE=$CPKG_HOME/pkgconfig.cache
-    local REFFILE=/var/db/pkgin/pkgin.db
-    local BUILD=0
-
-    if [ ! -f $CACHE ]; then
-        BUILD=1
-    elif [ $REFFILE -nt $CACHE ]; then
-        BUILD=1
-    fi
-
-    if (($BUILD == 1)); then
-        build_pkgconfig_cache $CACHE.tmp
-    else
-        touch $CACHE.tmp
-    fi
+    rm -f $CACHE.info
 
     local PC
     local PKG
@@ -263,6 +243,30 @@ function lp_make_pkgconfig_map() {
     for PKG in ${!MAP[@]}; do
         echo "$PKG ${MAP[$PKG]}"
     done | cdb -c -m $CACHE
+}
+
+function lp_make_pkgconfig_map() {
+    cp_make_home
+
+    local CACHE=$CPKG_HOME/pkgconfig.cache
+    local REFFILES="/var/db/pkgin/pkgin.db /var/db/pkg/pkgdb.byfile.db"
+    local REFFILE
+    local BUILD=0
+
+    if [ ! -f $CACHE ]; then
+        BUILD=1
+    else
+        for REFFILE in $REFFILES; do
+            if [ $REFFILE -nt $CACHE ]; then
+                BUILD=1
+                break
+            fi
+        done
+    fi
+
+    if (($BUILD == 1)); then
+        build_pkgconfig_cache $CACHE
+    fi
 }
 
 function lp_get_pkgconfig() {
