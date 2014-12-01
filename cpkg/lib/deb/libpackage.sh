@@ -327,7 +327,7 @@ function build_pkgconfig_cache() {
         PC=${PC%.pc}
 
         if [[ "${MAP[$PKG]}" ]]; then
-            MAP[$PKG]=" $PC"
+            MAP[$PKG]+=" $PC"
         else
             MAP[$PKG]=$PC
         fi
