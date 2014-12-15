@@ -166,10 +166,10 @@ __EOCPKG_DIRS__
 
     # Prepare package install script
     for PHASE in configure remove purge; do
-        if [ -f $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_PARTNAME.$PHASE ]; then
+        if [ -f $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_NAME.$PHASE ]; then
             cp \
-                $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_PARTNAME.$PHASE \
-                $PKG_ROOTDIR/$PKG_PARTNAME.$PHASE
+                $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_NAME.$PHASE \
+                $PKG_ROOTDIR/$PKG_NAME.$PHASE
         fi
     done
 
@@ -177,9 +177,9 @@ __EOCPKG_DIRS__
     local SYSCONF
 
     for SYSCONF in cron.d init logrotate; do
-        if [ -f $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_PARTNAME.$SYSCONF ]; then
+        if [ -f $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_NAME.$SYSCONF ]; then
             cp \
-                $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_PARTNAME.$SYSCONF \
+                $PKG_SOURCEDIR/$CPKG_TYPE/$PKG_NAME.$SYSCONF \
                 $PKG_ROOTDIR/$PKG_NAME.$SYSCONF
 
             lp_handle_system_file \

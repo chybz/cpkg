@@ -53,7 +53,7 @@ function lp_handle_package_files() {
     for PHASE in ${!SCRIPT_SPECS[@]}; do
         DPKG_PHASE=${SCRIPT_SPECS[${PHASE}]}
 
-        if [ ! -f $PKG_ROOTDIR/$PKG_PARTNAME.$PHASE ]; then
+        if [ ! -f $PKG_ROOTDIR/$PKG_NAME.$PHASE ]; then
             continue
         fi
 
@@ -62,7 +62,7 @@ function lp_handle_package_files() {
         HAS_SCRIPTS[${DPKG_PHASE}]=1
 
         cp_wrap_script_for_phase \
-            $PKG_ROOTDIR/$PKG_PARTNAME.$PHASE \
+            $PKG_ROOTDIR/$PKG_NAME.$PHASE \
             $PHASE \
             $CPKG_SCRIPT
 
