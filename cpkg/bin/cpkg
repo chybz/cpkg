@@ -10,6 +10,7 @@ MYDIR=$(dirname $0)
 MYDIR=$(cd $MYDIR && pwd)
 MYTOPDIR=$(cd $MYDIR/.. && pwd)
 export CPKG_BIN=$MYDIR/$ME
+export CONFIGURED=0
 
 ##CPKG_DIRS##
 # CPKG BOOTSTRAP BEGIN
@@ -24,6 +25,7 @@ fi
 # CPKG BOOTSTRAP END
 
 . $LIBDIR/libcpkg.sh
+cp_check_conf
 
 ##############################################################################
 #
@@ -31,6 +33,10 @@ fi
 #
 ##############################################################################
 function cpkg_configure() {
+    if (($CONFIGURED)); then
+        return
+    fi
+
     lp_configure_package
     cp_configure_package
     cp_process_templates $SHAREDIR/templates/PKG $TOPDIR
@@ -38,6 +44,8 @@ function cpkg_configure() {
     local PRE=$(cp_dump_list PKG_DEPS)
     CPKG_TMPL_PRE+=("$PRE")
     cp_process_templates $PKGTMPL $PKG_ROOTDIR
+
+    CONFIGURED=1
 }
 
 function cpkg_build() {

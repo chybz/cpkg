@@ -360,12 +360,14 @@ function cp_run_getopts() {
             # Provide a boolean value for flags
             OPTARG=1
         elif [[ -z "$OPTARG" ]]; then
-            if [[ -n "${OPTA[3]}" ]]; then
+            if [[ -n "${OPTA[3]}" && ${OPTA[3]} != "__required__" ]]; then
                 # Use default argument
                 OPTARG="${OPTA[3]}"
             else
                 cp_usage "option -$OPT requires an argument"
             fi
+        else
+            eval "((++${CNAME}))"
         fi
 
         OPTVAR="${OPTA[0]}"
@@ -1221,9 +1223,7 @@ function cp_configure_package() {
         fi
     fi
 
-    echo $ARCH
     cp_save_hash "PKG_HAS" $CPKG_STATE_DIR/PKG/HAS
 }
 
 cp_init
-cp_check_conf
