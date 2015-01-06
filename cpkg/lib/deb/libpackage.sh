@@ -161,7 +161,7 @@ function build_pkgconfig_filters() {
     egrep -v "^/usr/include$" | \
     sed \
         -r \
-        -e "s,^/usr/(include|lib)/($ARCH/)?,s@," \
+        -e "s,^/usr/(include|lib)/($ARCH/)?,s@^," \
         -e "s,$,/@@," \
         > $CACHE.filters
 

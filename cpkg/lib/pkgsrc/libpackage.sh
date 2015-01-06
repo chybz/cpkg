@@ -148,7 +148,7 @@ function build_pkgconfig_filters() {
     grep -v "^/usr/pkg/include$" | \
     sed \
         -E \
-        -e "s,^/usr/pkg/(include|lib)/,s@," \
+        -e "s,^/usr/pkg/(include|lib)/,s@^," \
         -e "s,$,/@@," \
         > $CACHE.filters
 
