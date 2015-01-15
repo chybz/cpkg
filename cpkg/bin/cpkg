@@ -25,7 +25,6 @@ fi
 # CPKG BOOTSTRAP END
 
 . $LIBDIR/libcpkg.sh
-cp_check_conf
 
 ##############################################################################
 #
@@ -118,6 +117,7 @@ cp_get_options "$@"
 
 # Check configuration was loaded
 cp_ensure_file_exists $CPKG_CONF
+cp_check_conf
 cp_ensure_dir_exists $PKG_SOURCEDIR
 
 if ! [[ "$CPKG_CMD" =~ ^(configure|clean)$ ]]; then
