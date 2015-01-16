@@ -208,7 +208,21 @@ function lp_is_pkg_installed() {
 function lp_pkg_from_header() {
     local HEADER="$1"
 
-    cdb -q -m $CPKG_HOME/headers.cache $HEADER || true
+    set +e
+
+    local PKG=$(cdb -q -m $CPKG_HOME/headers.cache $HEADER)
+
+    if [[ -z "$PKG" ]]; then
+        PKG=$(
+            cdb -d -m $CPKG_HOME/headers.cache | \
+            grep -m 1 -E "$HEADER[[:space:]]" | \
+            cut -d ' ' -f 2
+        )
+    fi
+
+    set -e
+
+    echo $PKG
 }
 
 function lp_pkg_pkgconfigs() {

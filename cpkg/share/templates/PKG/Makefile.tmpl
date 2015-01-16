@@ -25,6 +25,9 @@ clean:
 % if (($CPKG_IS_DEB)); then
 package: clean build
 	$(CPKG) package
+
+upload:
+	dput *.changes
 % fi
 
 update-pkg: clean
