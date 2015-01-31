@@ -1,6 +1,6 @@
 language: bash
 before_script:
-    - sudo apt-get install -y rsync pkg-config tiny-cdb apt-file
+    - sudo apt-get install -y rsync pkg-config tinycdb apt-file
 script:
     - ./cpkg/bin/cpkg configure
     - make package
