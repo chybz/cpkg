@@ -520,6 +520,9 @@ function cp_set_git_variables() {
 function cp_set_scm_variables() {
     if [ -d $TOPDIR/.git ]; then
         cp_set_git_variables
+    else
+        PKG_AUTHOR_EMAIL="email@domain.com"
+        PKG_AUTHOR_NAME="John Doe"
     fi
 }
 
