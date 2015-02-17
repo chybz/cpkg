@@ -432,7 +432,7 @@ function cp_find_arch() {
             find $PKG_SOURCEDIR/$DIR -type f | \
             egrep -v "\.(svn|git)" | \
             xargs file | \
-            egrep "ELF (32|64)-bit"
+            egrep "(ELF (32|64)-bit|ar archive)"
         )
 
         if [[ $DIR == "_lib" && -n "$BIN" ]]; then
