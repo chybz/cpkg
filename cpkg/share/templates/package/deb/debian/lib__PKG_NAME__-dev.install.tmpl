@@ -1,8 +1,18 @@
 %{Bash}%
-OPTS["process"]=$((${PKG_HAS["BIN_LIBS"]}))
+if ((${PKG_HAS["BIN_LIBS"]} || ${PKG_HAS["DEV_LIBS"]})); then
+    OPTS["process"]=1
+else
+    OPTS["process"]=0
+fi
+
 if ((${OPTS["process"]})); then
 %{/Bash}%
+%     if ((${PKG_HAS["BIN_LIBS"]})); then
 usr/lib/lib*.so
-usr/lib/pkgconfig/*.pc
+%     fi
+%     if ((${PKG_HAS["DEV_LIBS"]})); then
+usr/lib/lib*.a
+%     fi
+usr/lib/pkgconfig/lib*.pc
 usr/include/%{ ${PKG_NAME} }%
 % fi

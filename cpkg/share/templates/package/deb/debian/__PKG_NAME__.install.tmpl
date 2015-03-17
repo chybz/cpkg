@@ -1,0 +1,21 @@
+%{Bash}%
+
+for DIR in usr/bin etc usr/share; do
+    if [[ -d $PKG_STAGEDIR/$DIR ]]; then
+        OPTS["process"]=1
+        break
+    fi
+done
+
+if ((${OPTS["process"]})); then
+%{/Bash}%
+%     if [[ -d $PKG_STAGEDIR/usr/bin ]]; then
+usr/bin
+%     fi
+%     if [[ -d $PKG_STAGEDIR/etc ]]; then
+etc
+%     fi
+%     if [[ -d $PKG_STAGEDIR/usr/share ]]; then
+usr/share
+%     fi
+% fi

@@ -1,7 +1,0 @@
-RSYNC=rsync
-RSYNC_OPTS=-avq --delete
-
-all:
-
-install:
-	$(RSYNC) $(RSYNC_OPTS) stage/ $$DESTDIR/

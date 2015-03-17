@@ -13,8 +13,10 @@ all: build
 build:
 	$(CPKG) build
 
+% if (($CPKG_IS_PKGSRC)); then
 install:
 	$(CPKG) install
+% fi
 
 clean:
 	rm -rf %{ $PKG_NAME }%-*

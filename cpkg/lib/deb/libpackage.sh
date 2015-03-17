@@ -11,7 +11,7 @@ function lp_init() {
 }
 
 function lp_prepare_package_directory() {
-    mkdir -p $PKG_ROOTDIR/{debian,stage}
+    mkdir -p $PKG_ROOTDIR/debian
     touch $PKG_ROOTDIR/TODO
 }
 

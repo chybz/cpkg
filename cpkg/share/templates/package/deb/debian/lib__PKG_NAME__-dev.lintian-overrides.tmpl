@@ -1,5 +1,5 @@
 %{Bash}%
-OPTS["process"]=$((${PKG_HAS["BIN_LIBS"]}))
+OPTS["process"]=$((${PKG_HAS["BIN_LIBS"]} || ${PKG_HAS["DEV_LIBS"]}))
 %{/Bash}%
 % if ((${OPTS["process"]})); then
 lib%{ ${PKG_NAME} }%-dev: new-package-should-close-itp-bug

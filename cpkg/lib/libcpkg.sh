@@ -38,6 +38,7 @@ declare -a PKG_DEPS
 
 declare -A PKG_HAS=(
     [BIN_LIBS]=0
+    [DEV_LIBS]=0
 )
 
 PACKAGE_VARS="PKG_VER PKG_REV PKG_NAME PKG_DATE PKG_SHORTDESC PKG_LONGDESC"
@@ -182,7 +183,7 @@ function cp_check_conf() {
     TMPLDIR=$SHAREDIR/templates
     PKGTMPL=$SHAREDIR/templates/package/$CPKG_TYPE
     PKG_ROOTDIR=$TOPDIR/$PKG_NAME-$PKG_VER
-    PKG_STAGEDIR=$PKG_ROOTDIR/stage
+    PKG_STAGEDIR=$PKG_ROOTDIR
     PKG_SUPPORTDIR=$PKG_ROOTDIR/support
 
     cp_set_package_variables
@@ -1223,6 +1224,17 @@ function cp_configure_package() {
 
         if [[ -n "$BIN" ]]; then
             PKG_HAS[BIN_LIBS]=1
+        fi
+
+        local DEV=$(
+            find $PKG_SOURCEDIR/_lib -type f | \
+            egrep -v "\.(svn|git)" | \
+            xargs file | \
+            egrep "ar archive"
+        )
+
+        if [[ -n "$DEV" ]]; then
+            PKG_HAS[DEV_LIBS]=1
         fi
     fi
 

@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: ##PKG_AUTHOR_NAME## <##PKG_AUTHOR_EMAIL##>
 Build-Depends: debhelper (>= 7), build-essential
 Standards-Version: 3.7.2
-
 % if ((${PKG_HAS["BIN"]})); then
+
 Package: ##PKG_NAME##
 Architecture: ##PKG_ARCH##
 Depends: %{ $(cp_join ", " "${PKG_DEPS[@]}") }%
@@ -22,11 +22,21 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: runtime shared libraries
  %{ ${PKG_SHORTDESC} }% shared libraries
  .
+% fi
+% if ((${PKG_HAS["BIN_LIBS"]} || ${PKG_HAS["DEV_LIBS"]})); then
 
 Package: lib%{ ${PKG_NAME} }%-dev
 Section: libdevel
+%     if ((${PKG_HAS["DEV_LIBS"]})); then
+Architecture: any
+%     else
 Architecture: all
+%     fi
+%     if ((${PKG_HAS["BIN_LIBS"]})); then
 Depends: ${misc:Depends}, lib%{ ${PKG_NAME} }% (= ${binary:Version})
+%     else
+Depends: ${misc:Depends}
+%     fi
 Description: development files
  %{ ${PKG_SHORTDESC} }% development headers and files
  .
