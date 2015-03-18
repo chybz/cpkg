@@ -1,5 +1,6 @@
 *.deb
 *.changes
+*.upload
 
 # CPKG_GITIGNORE BEGIN
 Makefile
