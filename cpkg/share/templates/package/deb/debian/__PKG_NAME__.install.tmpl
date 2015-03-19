@@ -1,6 +1,6 @@
 %{Bash}%
 
-for DIR in bin etc share; do
+for DIR in bin lib etc share; do
     if [[ -d $PKG_SOURCEDIR/$DIR ]]; then
         OPTS["process"]=1
         break
@@ -11,6 +11,9 @@ if ((${OPTS["process"]})); then
 %{/Bash}%
 %     if [[ -d $PKG_SOURCEDIR/bin ]]; then
 usr/bin
+%     fi
+%     if [[ -d $PKG_SOURCEDIR/lib ]]; then
+usr/lib/%{ $PKG_NAME }%
 %     fi
 %     if [[ -d $PKG_SOURCEDIR/etc ]]; then
 etc
