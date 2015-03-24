@@ -215,7 +215,7 @@ function lp_pkg_from_header() {
     if [[ -z "$PKG" ]]; then
         PKG=$(
             cdb -d -m $CPKG_HOME/headers.cache | \
-            grep -m 1 -E "$HEADER[[:space:]]" | \
+            grep -m 1 -E "(^|/)$HEADER[[:space:]]" | \
             cut -d ' ' -f 2
         )
     fi
