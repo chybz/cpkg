@@ -55,6 +55,7 @@ function lp_install_local_package() {
 
     [[ -f "$PKG" ]] || cp_error "package not found: $PKG"
     sudo pkg_add -U $PKG
+    sudo pkgin -f ls >/dev/null
 }
 
 function lp_install_packages() {
