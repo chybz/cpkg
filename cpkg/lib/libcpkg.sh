@@ -41,7 +41,8 @@ declare -A PKG_HAS=(
     [DEV_LIBS]=0
 )
 
-PACKAGE_VARS="PKG_VER PKG_REV PKG_NAME PKG_DATE PKG_SHORTDESC PKG_LONGDESC"
+PACKAGE_VARS="PKG_VER PKG_MAJOR PKG_MINOR PKG_PATCH PKG_REV"
+PACKAGE_VARS+=" PKG_NAME PKG_DATE PKG_SHORTDESC PKG_LONGDESC"
 PACKAGE_DIRS=" PKG_ROOTDIR PKG_BINDIR"
 PACKAGE_DIRS+=" PKG_MANDIR PKG_VARDIR PKG_LOGDIR PKG_RUNDIR"
 PACKAGE_DIRS+=" PKG_ETCDIR PKG_SYSETCDIR"
@@ -157,6 +158,27 @@ function cp_init() {
         [[ -f $CPKG_CONF ]] && . $CPKG_CONF
         . $CPKG_LIBDIR/libcpkg-utils.sh
         . $CPKG_LIBDIR/$CPKG_TYPE/sys_vars.sh
+
+        # Parse and check version
+        local -a PARTS=(${PKG_VER//./ })
+        PKG_MAJOR="${PARTS[0]}"
+        PKG_MINOR="${PARTS[1]}"
+        PKG_PATCH="${PARTS[2]}"
+
+        [ -n "$PKG_MAJOR" ] || cp_error "invalid version '$PKG_VER'"
+        [ -n "$PKG_MINOR" ] || cp_error "invalid version '$PKG_VER'"
+        [ -n "$PKG_PATCH" ] || PKG_PATCH=0
+
+        [[ $PKG_MAJOR =~ ^[[:digit:]]+$ ]] || \
+           cp_error "invalid version major '$PKG_MAJOR' in '$PKG_VER'"
+
+        [[ $PKG_MINOR =~ ^[[:digit:]]+$ ]] || \
+           cp_error "invalid version minor '$PKG_MINOR' in '$PKG_VER'"
+
+        [[ $PKG_PATCH =~ ^[[:digit:]]+$ ]] || \
+           cp_error "invalid version patchlevel '$PKG_PATCH' in '$PKG_VER'"
+
+        PKG_VER="${PKG_MAJOR}.${PKG_MINOR}.${PKG_PATCH}"
 
         if [[ $CPKG_LIBDIR =~ ^$CPKG_PREFIX ]]; then
             CPKG_ETCDIR=$PKG_SYSETCDIR/cpkg
