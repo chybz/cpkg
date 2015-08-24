@@ -512,7 +512,7 @@ function cp_set_package_variables() {
 }
 
 function cp_set_git_variables() {
-    URL=$(git config --local remote.origin.url)
+    URL=$(git config --local remote.origin.url || echo "local@local")
     PKG_AUTHOR_EMAIL=$(git config user.email || echo "email@domain.com")
     PKG_AUTHOR_NAME=$(git config user.name || echo "John Doe")
 
