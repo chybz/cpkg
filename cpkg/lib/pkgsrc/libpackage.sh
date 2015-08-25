@@ -135,7 +135,7 @@ function build_pkgconfig_filters() {
 
     set +e
 
-    find /usr/pkg/lib/pkgconfig -name \*.pc | while read PC; do
+    find $CPKG_PREFIX/lib/pkgconfig -name \*.pc | while read PC; do
         pkg-config \
             --cflags-only-I \
             --silence-errors \
@@ -146,10 +146,10 @@ function build_pkgconfig_filters() {
         grep -v "^$"
     done | sort | uniq | \
     sed -E -e "s,/$,," | \
-    grep -v "^/usr/pkg/include$" | \
+    grep -v "^$CPKG_PREFIX/include$" | \
     sed \
         -E \
-        -e "s,^/usr/pkg/(include|lib)/,s@^," \
+        -e "s,^$CPKG_PREFIX/(include|lib)/,s@^," \
         -e "s,$,/@@," \
         > $CACHE.filters
 
@@ -164,16 +164,16 @@ function build_header_cache() {
 
     cp_msg "building pkgsrc header cache"
 
-    local CMD='pkgin sef "^/usr/pkg/include"'
+    local CMD='pkgin sef "^$CPKG_PREFIX/include"'
 
     eval "$CMD" | \
         sed \
             -E \
-            -e "s,^([^:]+): /usr/pkg/include/(.*),\2 \1,g" \
+            -e "s,^([^:]+): $CPKG_PREFIX/include/(.*),\2 \1,g" \
             -f $CACHE.filters \
         > $CACHE.uninstalled
 
-    make_pkg_providers_cache "/usr/pkg/include" $CACHE.installed.tmp ".*\.h.*" 1
+    make_pkg_providers_cache "$CPKG_PREFIX/include" $CACHE.installed.tmp ".*\.h.*" 1
     sed -E -f $CACHE.filters < $CACHE.installed.tmp > $CACHE.installed
     rm -f $CACHE.installed.tmp
 
@@ -208,9 +208,9 @@ function build_pkgconfig_cache() {
     cp_msg "building pkgsrc pkg-config cache"
 
     pkg_info -aL | \
-        egrep "^Information|/usr/pkg/lib/pkgconfig/.*\.pc" | \
+        egrep "^Information|$CPKG_PREFIX/lib/pkgconfig/.*\.pc" | \
         sed \
-            -e "s,/usr/pkg/lib/pkgconfig/,,g" \
+            -e "s,$CPKG_PREFIX/lib/pkgconfig/,,g" \
             -e "s,\.pc,,g" \
             -e "s,Information for,PACKAGE,g" \
         > $CACHE.info
@@ -277,9 +277,9 @@ function lp_get_pkgconfig() {
     local PCPATH=$PKG_CONFIG_PATH
 
     if [ -n "$PCPATH" ]; then
-        PCPATH+=":/usr/pkg/lib/pkgconfig"
+        PCPATH+=":$CPKG_PREFIX/lib/pkgconfig"
     else
-        PCPATH="/usr/pkg/lib/pkgconfig"
+        PCPATH="$CPKG_PREFIX/lib/pkgconfig"
     fi
 
     env PKG_CONFIG_PATH=$PCPATH pkg-config $@ $PC
