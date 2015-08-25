@@ -115,6 +115,7 @@ __EOCPKG_DIRS__
 
         local SCRIPTS
         SCRIPTS=$(find $PKG_STAGEDIR -type f | xargs grep -l '#!.*sh' || true)
+        local SHELL=$(which bash)
 
         for SCRIPT in $SCRIPTS; do
             # Use full shell path
