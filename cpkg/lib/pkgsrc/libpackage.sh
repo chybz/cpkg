@@ -99,7 +99,7 @@ function lp_make_pkg_map() {
     pkg_info -a | \
     sed \
         -E \
-        -e "s, .*$, 1,g" | \
+        -e "s,-[[:digit:]].*$, 1,g" | \
         cdb -c -m $CACHE
 }
 
@@ -113,12 +113,13 @@ function make_pkg_providers_cache() {
     pkg_info -aL | \
         egrep "^Information|$DIR/$EXPR" | \
         sed \
+            -E \
             -e "s,$DIR/,,g" \
-            -e "s,Information for,PACKAGE,g" \
+            -e "s,Information for (.*)-[[:digit:]].*,PACKAGE \1,g" \
         > $CACHE.tmp
 
     while read LINE; do
-        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
+        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*)$ ]]; then
             PKG="${BASH_REMATCH[1]}"
         else
             echo "$LINE $PKG"
@@ -211,13 +212,14 @@ function build_pkgconfig_cache() {
     pkg_info -aL | \
         egrep "^Information|$CPKG_PREFIX/lib/pkgconfig/.*\.pc" | \
         sed \
+            -E \
             -e "s,$CPKG_PREFIX/lib/pkgconfig/,,g" \
             -e "s,\.pc,,g" \
-            -e "s,Information for,PACKAGE,g" \
+            -e "s,Information for (.*)-[[:digit:]].*,PACKAGE \1,g" \
         > $CACHE.info
 
     while read LINE; do
-        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*):$ ]]; then
+        if [[ "$LINE" =~ ^PACKAGE[[:space:]]+(.*)$ ]]; then
             PKG="${BASH_REMATCH[1]}"
         else
             echo "$PKG $LINE"

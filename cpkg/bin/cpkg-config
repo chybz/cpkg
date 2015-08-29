@@ -2,7 +2,15 @@
 
 set -e
 
+ME=$(basename $0)
+MYDIR=$(dirname $0)
+MYDIR=$(cd $MYDIR/.. && pwd)
+
 ##CPKG_DIRS##
+
+if [ -z "$LIBDIR" ]; then
+    LIBDIR=$MYDIR/lib
+fi
 
 while getopts "Lls" OPT; do
     case $OPT in

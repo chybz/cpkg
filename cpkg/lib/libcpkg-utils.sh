@@ -147,7 +147,7 @@ function cp_file_hash() {
         ;;
 
         Darwin)
-        MD5=/usr/pkg/bin/digest
+        MD5=$CPKG_PREFIX/bin/digest
         MD5ARGS=md5
         POS=4
         ;;
