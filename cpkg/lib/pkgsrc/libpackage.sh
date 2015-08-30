@@ -165,15 +165,13 @@ function build_header_cache() {
 
     cp_msg "building pkgsrc header cache"
 
-    find $PKGSRC_DIR/ -type f -name PLIST | while read FILE; do
-        PKG=${FILE%/PLIST}
-        PKG=$(basename $PKG)
-        grep "^include/" $FILE | \
-            sed \
-                -E \
-                -e "s,^include/(.*)$,\1 $PKG,g" \
-                -f $CACHE.filters
-    done > $CACHE.uninstalled
+    find $PKGSRC_DIR/ -type f -name PLIST | \
+        xargs grep "^include/" | \
+        sed \
+            -E \
+            -e "s,^.*/(.*)/PLIST:include/(.*)$,\2 \1,g" \
+            -f $CACHE.filters \
+        > $CACHE.uninstalled
 
     make_pkg_providers_cache "$CPKG_PREFIX/include" $CACHE.installed.tmp ".*\.h.*" 1
     sed -E -f $CACHE.filters < $CACHE.installed.tmp > $CACHE.installed
