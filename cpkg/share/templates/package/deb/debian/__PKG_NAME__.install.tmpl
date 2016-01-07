@@ -15,7 +15,7 @@ usr/bin
 %     if [[ -d $PKG_SOURCEDIR/lib ]]; then
 usr/lib/%{ $PKG_NAME }%
 %     fi
-%     if [[ -d $PKG_SOURCEDIR/etc ]]; then
+%     if [[ -d $PKG_SOURCEDIR/etc || -d $PKG_SOURCEDIR/_etc ]]; then
 etc
 %     fi
 %     if [[ -d $PKG_SOURCEDIR/share ]]; then
