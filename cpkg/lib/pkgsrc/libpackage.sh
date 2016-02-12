@@ -151,6 +151,7 @@ function build_pkgconfig_filters() {
     sed \
         -E \
         -e "s,^$CPKG_PREFIX/(include|lib)/,s@^," \
+        -e "s,^/opt/X11/(include|lib)/,s@^," \
         -e "s,$,/@@," \
         > $CACHE.filters
 
