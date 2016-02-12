@@ -147,7 +147,7 @@ function build_pkgconfig_filters() {
         grep -v "^$"
     done | sort | uniq | \
     sed -E -e "s,/$,," | \
-    grep -v "^$CPKG_PREFIX/include$" | \
+    grep -E -v "^($CPKG_PREFIX|/opt/X11)/include$" | \
     sed \
         -E \
         -e "s,^$CPKG_PREFIX/(include|lib)/,s@^," \
