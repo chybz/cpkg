@@ -162,7 +162,8 @@ function build_pkgconfig_filters() {
     sed \
         -r \
         -e "s,^/usr/(include|lib)/($ARCH/)?,s@^," \
-        -e "s,$,/@@," \
+        -e "s,$,/@@," | \
+    egrep "^s@" \
         > $CACHE.filters
 
     set -e
