@@ -30,7 +30,7 @@ DEPENDS+=	%{ $DEP }%
 %     done
 % fi
 
-WRKSRC=		${WRKDIR}/%{ ${PKG_NAME} }%-${GITCOMMIT}
+WRKSRC=		${WRKDIR}/%{ ${PKG_NAME} }%-%{ ${PKG_GIT_COMMIT} }%
 % CFGFILES=$(cp_find_rel $PKG_SOURCEDIR/etc)
 % if [[ -n "$CFGFILES" ]]; then
 
