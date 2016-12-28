@@ -205,7 +205,7 @@ function build_header_cache() {
 
     cat $CACHE.repo $CACHE.installed \
         | sort | uniq | \
-        cdb -c -m $CACHE
+        cdb -c -r -m $CACHE
 
     rm -f $CACHE.repo $CACHE.installed
 }
