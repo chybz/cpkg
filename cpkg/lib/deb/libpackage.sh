@@ -169,17 +169,20 @@ function build_pkgconfig_filters() {
     set -e
 }
 
-function build_header_cache() {
+function build_header_cache_from_repo() {
     local CACHE=$1
 
-    local ARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null)
-    local HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+    local VER=$(lsb_release -sr)
+    local CMD
 
-    build_pkgconfig_filters $CACHE
-
-    cp_msg "building apt header cache"
-
-    local CMD='zgrep -h "^usr/include/" /var/cache/apt/apt-file/*.gz'
+    if dpkg --compare-versions "$VER" lt "9"; then
+        # Before stretch
+        CMD='zgrep -h "^usr/include/" /var/cache/apt/apt-file/*.gz'
+    else
+        # stretch or after
+        CMD='/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/*Contents-*.lz4'
+        CMD+=' | grep -h "^usr/include/"'
+    fi
 
     if [[ "$HOST_ARCH" = "amd64" ]]; then
         # Filter out includes from libc6-dev-i386
@@ -193,6 +196,19 @@ function build_header_cache() {
             -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),\2 \3,g" \
             -f $CACHE.filters \
         > $CACHE.repo
+}
+
+function build_header_cache() {
+    local CACHE=$1
+
+    local ARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null)
+    local HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
+
+    build_pkgconfig_filters $CACHE
+
+    cp_msg "building apt header cache"
+
+    build_header_cache_from_repo $CACHE
 
     find /usr/include -type f -name \*.h\* | \
         xargs dpkg -S 2>&1 | \
