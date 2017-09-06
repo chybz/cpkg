@@ -21,7 +21,7 @@ install:
 clean:
 	rm -rf %{ $PKG_NAME }%-*
 % if (($CPKG_IS_DEB)); then
-	rm -f *.deb *.changes *.upload
+	rm -f *.deb *.changes *.upload *.buildinfo
 % fi
 
 % if (($CPKG_IS_DEB)); then
