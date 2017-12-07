@@ -1234,8 +1234,6 @@ function cp_run_support_modules() {
 }
 
 function cp_configure_package() {
-    set -x
-
     if [[ -d $PKG_SOURCEDIR/bin ]]; then
         PKG_HAS[BIN]=1
     fi
@@ -1265,11 +1263,6 @@ function cp_configure_package() {
     fi
 
     cp_save_hash "PKG_HAS" $CPKG_STATE_DIR/PKG/HAS
-
-    set +x
-
-    echo "==== PKG_HAS"
-    cat $CPKG_STATE_DIR/PKG/HAS
 }
 
 cp_init
