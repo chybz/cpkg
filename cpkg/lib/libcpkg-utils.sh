@@ -79,17 +79,7 @@ function cp_make_save_file() {
 }
 
 function cp_dump_hash() {
-    local -a 'KEYS=("${!'"$1"'[@]}")'
-    local -a 'VALUES=("${'"$1"'[@]}")'
-    local I
-
-    echo "declare -A $1=("
-
-    for ((I=0; $I < ${#KEYS[@]}; I++)); do
-        echo "    [\"${KEYS[$I]}\"]=\"${VALUES[$I]}\""
-    done
-
-    echo ")"
+    declare -p "$1"
 }
 
 function cp_dump_list() {
