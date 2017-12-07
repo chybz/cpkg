@@ -126,6 +126,9 @@ function lp_configure_package() {
 function lp_build_package() {
     cd $PKG_ROOTDIR
 
+    echo "PKG_ARCH=$PKG_ARCH"
+    cat debian/control
+
     if [ "$PKG_ARCH" = "all" ]; then
         dpkg-buildpackage -A -uc
     else
