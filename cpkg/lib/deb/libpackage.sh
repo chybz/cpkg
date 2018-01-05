@@ -320,6 +320,10 @@ function build_pkgconfig_cache() {
     local DIR
 
     for DIR in ${PKGCONFIG_DIRS[@]}; do
+        if [ ! -d $DIR ]; then
+            continue
+        fi
+
         PKGCONFIG_FILES+=($(find $DIR -type f -name \*.pc))
     done
 
