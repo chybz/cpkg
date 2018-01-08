@@ -30,7 +30,7 @@ function lp_handle_package_files() {
     local PHASE
     local CPKG_SCRIPT_BASE
 
-    declare -A HAS_SCRIPTS
+    declare -A HAS_SCRIPTS=()
     HAS_SCRIPTS["postinst"]=0
     HAS_SCRIPTS["postrm"]=0
     HAS_SCRIPTS["preinst"]=0
@@ -44,7 +44,7 @@ function lp_handle_package_files() {
 
     CPKG_SCRIPT=/tmp/cpkg-script.$$
 
-    declare -A SCRIPT_SPECS
+    declare -A SCRIPT_SPECS=()
     SCRIPT_SPECS["configure"]="postinst";
     SCRIPT_SPECS["remove"]="postrm";
     SCRIPT_SPECS["purge"]="postrm";

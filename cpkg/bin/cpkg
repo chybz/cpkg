@@ -86,8 +86,8 @@ function cpkg_clean() {
 # Main part
 #
 ##############################################################################
-declare -A CFGOPTS
-declare -A PKGOPTS
+declare -A CFGOPTS=()
+declare -A PKGOPTS=()
 
 if (($CPKG_IS_PKGSRC)); then
     PPATH=$PKGSRC_DIR

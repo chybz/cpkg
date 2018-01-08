@@ -20,21 +20,21 @@ export CPKG_BUILDING_MYSELF=0
 export CPKG_DEBUG=0
 CPKG_STATE_DIR=$TOPDIR/.cpkg
 
-declare -a COMMANDS
-declare -a CMDSSPECLIST
-declare -A CMDSSPECMAP
-declare -A CMDSMAP
+declare -a COMMANDS=()
+declare -a CMDSSPECLIST=()
+declare -A CMDSSPECMAP=()
+declare -A CMDSMAP=()
 declare -A OPTSPECS=(
     [h]="HELP::this help:"
 )
-declare -A OPTIONS
-declare -A CPKG_TEMPLATE_DIRS
-declare -A CPKG_OTHER_DIRS
-declare -A CPKG_HEADER_MAP
-declare -A CPKG_PKG_MAP
-declare -A CPKG_PKGCONFIG_MAP
-declare -a CPKG_TMPL_PRE
-declare -a PKG_DEPS
+declare -A OPTIONS=()
+declare -A CPKG_TEMPLATE_DIRS=()
+declare -A CPKG_OTHER_DIRS=()
+declare -A CPKG_HEADER_MAP=()
+declare -A CPKG_PKG_MAP=()
+declare -A CPKG_PKGCONFIG_MAP=()
+declare -a CPKG_TMPL_PRE=()
+declare -a PKG_DEPS=()
 
 declare -A PKG_HAS=(
     [BIN_LIBS]=0
@@ -745,7 +745,7 @@ function cp_process_template() {
 
     local TMPL="/tmp/cpkg-${FROM////_}.$$"
     local INSHBLOCK=0 INBLOCK=0 LINENUM=0
-    declare -a INLINES
+    declare -a INLINES=()
     local INLINE IDX BEFORE REST
 
     # Set process_templates (parent function) current template options
