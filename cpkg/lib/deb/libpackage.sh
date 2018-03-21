@@ -177,11 +177,11 @@ function build_header_cache_from_repo() {
 
     if dpkg --compare-versions "$VER" lt "9"; then
         # Before stretch
-        CMD='zgrep -h "^usr/include/" /var/cache/apt/apt-file/*.gz'
+        CMD='zgrep -h "^usr/(local/)?include/" /var/cache/apt/apt-file/*.gz'
     else
         # stretch or after
         CMD='/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/*Contents-*.lz4'
-        CMD+=' | grep -h "^usr/include/"'
+        CMD+=' | grep -h "^usr/(local/)?include/"'
     fi
 
     if [[ "$HOST_ARCH" = "amd64" ]]; then
@@ -193,7 +193,7 @@ function build_header_cache_from_repo() {
         sort -ur -k 1,1 | \
         sed \
             -r \
-            -e "s,^usr/include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),\2 \3,g" \
+            -e "s,^usr/(local/)?include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),\2 \3,g" \
             -f $CACHE.filters \
         > $CACHE.repo
 }
@@ -210,14 +210,18 @@ function build_header_cache() {
 
     build_header_cache_from_repo $CACHE
 
-    find /usr/include -type f -name \*.h\* | \
-        xargs dpkg -S 2>&1 | \
-        grep -v "^dpkg-query: " | \
-        sed \
-            -r \
-            -e "s,^([^[:space:]:]+):([^[:space:]]*) /usr/include/([^[:space:]]+)$,\3 \1,g" \
-            -f $CACHE.filters \
-        > $CACHE.installed
+    rm -f $CACHE.installed
+
+    for INCDIR in /usr/include /usr/local/include; do
+        find $INCDIR -type f -name \*.h\* | \
+            xargs dpkg -S 2>&1 | \
+            grep -v "^dpkg-query: " | \
+            sed \
+                -r \
+                -e "s,^([^[:space:]:]+):([^[:space:]]*) $INCDIR/([^[:space:]]+)$,\3 \1,g" \
+                -f $CACHE.filters \
+            >> $CACHE.installed
+    done
 
     cat $CACHE.repo $CACHE.installed \
         | sort | uniq | \
