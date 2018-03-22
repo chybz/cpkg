@@ -8,8 +8,6 @@ UTILS=$MYTOPDIR/utils
 
 $UTILS/install-deps.sh
 
-set -x
-
 cd $MYTOPDIR
 ./cpkg/bin/cpkg configure
-./cpkg/bin/cpkg package -P -I
+bash -x ./cpkg/bin/cpkg package -P -I
