@@ -85,6 +85,18 @@ function lp_handle_package_files() {
         fi
     done
 
+    # Fixup install file to include 'usr/share' dir wherever
+    # man page are present
+    local DPKG_INSTALL_FILE=$PKG_ROOTDIR/debian/$PKG_NAME.install
+    local MANDIR=$PKG_STAGEDIR/$PKG_MANDIR
+    local USR_SHARE='usr/share'
+
+    if [[ -d ${MANDIR} ]];then
+        if [[ $(grep -c "${USR_SHARE}" ${DPKG_INSTALL_FILE}) ==  "0" ]];then
+        echo ${USR_SHARE} >> ${DPKG_INSTALL_FILE}
+        fi
+    fi
+
     local FILES=$(find $PKG_ROOTDIR/debian -maxdepth 1 -type f | xargs)
 
     local TAG="##"
