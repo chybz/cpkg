@@ -10,4 +10,4 @@ $UTILS/install-deps.sh
 
 cd $MYTOPDIR
 ./cpkg/bin/cpkg configure
-bash -x ./cpkg/bin/cpkg package -P -I
+make update-pkg
