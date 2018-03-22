@@ -10,4 +10,6 @@ $UTILS/install-deps.sh
 
 cd $MYTOPDIR
 ./cpkg/bin/cpkg configure
+echo "====== Makefile"
+cat Makefile
 make update-pkg
