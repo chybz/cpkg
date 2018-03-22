@@ -8,8 +8,8 @@ UTILS=$MYTOPDIR/utils
 
 $UTILS/install-deps.sh
 
+set -x
+
 cd $MYTOPDIR
 ./cpkg/bin/cpkg configure
-echo "====== Makefile"
-cat Makefile
-make update-pkg
+./cpkg/bin/cpkg package -P -I
