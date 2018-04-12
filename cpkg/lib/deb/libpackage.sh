@@ -167,7 +167,7 @@ function build_pkgconfig_filters() {
         sed \
             -e "s/-I//g" \
             -e "s/ /\n/g" | \
-        grep -v "^$"
+        egrep -v "^$"
     done | sort | uniq | \
     sed -r -e "s,/$,," | \
     egrep -v "^/usr/include$" | \
@@ -193,7 +193,7 @@ function build_header_cache_from_repo() {
     else
         # stretch or after
         CMD='/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/*Contents-*.lz4'
-        CMD+=' | grep -h "^usr/(local/)?include/"'
+        CMD+=' | egrep -h "^usr/(local/)?include/"'
     fi
 
     if [[ "$HOST_ARCH" = "amd64" ]]; then
@@ -227,7 +227,7 @@ function build_header_cache() {
     for INCDIR in /usr/include /usr/local/include; do
         find $INCDIR -type f -name \*.h\* | \
             xargs dpkg -S 2>&1 | \
-            grep -v "^dpkg-query: " | \
+            egrep -v "^dpkg-query: " | \
             sed \
                 -r \
                 -e "s,^([^[:space:]:]+):([^[:space:]]*) $INCDIR/([^[:space:]]+)$,\3 \1,g" \
@@ -345,7 +345,7 @@ function build_pkgconfig_cache() {
 
     if ((${#PKGCONFIG_FILES[@]} > 0)); then
         dpkg -S ${PKGCONFIG_FILES[@]} 2>&1 | \
-            grep -v "^dpkg-query: " | \
+            egrep -v "^dpkg-query: " | \
             sed \
                 -r \
                 -e "s,: [^[:space:]]+/pkgconfig/, ,g" \
