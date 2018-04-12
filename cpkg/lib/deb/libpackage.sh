@@ -205,7 +205,7 @@ function build_header_cache_from_repo() {
         sort -ur -k 1,1 | \
         sed \
             -r \
-            -e "s,^usr/(local/)?include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),\2 \3,g" \
+            -e "s,^usr/(local/)?include/($ARCH/)?([^[:space:]]+)[[:space:]]+.+/([^/]*),\3 \4,g" \
             -f $CACHE.filters \
         > $CACHE.repo
 }
