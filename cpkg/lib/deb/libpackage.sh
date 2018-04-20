@@ -189,7 +189,7 @@ function build_header_cache_from_repo() {
 
     if dpkg --compare-versions "$VER" lt "9"; then
         # Before stretch
-        CMD='zgrep -h "^usr/(local/)?include/" /var/cache/apt/apt-file/*.gz'
+        CMD='zgrep -Eh "^usr/(local/)?include/" /var/cache/apt/apt-file/*.gz'
     else
         # stretch or after
         CMD='/usr/lib/apt/apt-helper cat-file /var/lib/apt/lists/*Contents-*.lz4'
