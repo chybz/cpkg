@@ -1,7 +1,7 @@
 set -e
 
 # Check BASH version
-if [ "${BASH_VERSINFO[0]}" -ne 4 ]; then
+if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
     echo "Bash version 4 or greater is needed (you have: $BASH_VERSION)"
     exit 1
 fi

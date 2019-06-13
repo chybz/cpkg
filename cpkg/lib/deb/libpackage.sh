@@ -225,6 +225,10 @@ function build_header_cache() {
     rm -f $CACHE.installed
 
     for INCDIR in /usr/include /usr/local/include; do
+        if [ ! -d $INCDIR ]; then
+            continue
+        fi
+
         find $INCDIR -type f -name \*.h\* | \
             xargs dpkg -S 2>&1 | \
             egrep -v "^dpkg-query: " | \
@@ -326,10 +330,11 @@ function build_pkgconfig_cache() {
 
     local ARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null)
     local HOST_ARCH=$(dpkg-architecture -qDEB_HOST_ARCH 2>/dev/null)
-    local -a PKGCONFIG_DIRS=(/usr/lib/pkgconfig)
+    local -a PKGCONFIG_DIRS=(/usr/lib/pkgconfig /usr/local/lib/pkgconfig)
 
     if [[ -n "$ARCH" ]]; then
         PKGCONFIG_DIRS+=(/usr/lib/$ARCH/pkgconfig)
+        PKGCONFIG_DIRS+=(/usr/local/lib/$ARCH/pkgconfig)
     fi
 
     local -a PKGCONFIG_FILES
@@ -384,16 +389,21 @@ function lp_make_pkgconfig_map() {
     local REFDIR
     local BUILD=0
 
-    local -a PKGCONFIG_DIRS=(/usr/lib/pkgconfig)
+    local -a PKGCONFIG_DIRS=(/usr/lib/pkgconfig /usr/local/lib/pkgconfig)
 
     if [[ -n "$ARCH" ]]; then
         PKGCONFIG_DIRS+=(/usr/lib/$ARCH/pkgconfig)
+        PKGCONFIG_DIRS+=(/usr/local/lib/$ARCH/pkgconfig)
     fi
 
     if [ ! -f $CACHE ]; then
         BUILD=1
     else
         for REFDIR in ${PKGCONFIG_DIRS[@]}; do
+            if [ ! -d $REFDIR ]; then
+                continue
+            fi
+
             if [ $REFDIR -nt $CACHE ]; then
                 BUILD=1
                 break
