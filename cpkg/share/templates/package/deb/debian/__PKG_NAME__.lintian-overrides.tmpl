@@ -1,6 +1,8 @@
 % OPTS["append"]=yes
 ##PKG_NAME##: new-package-should-close-itp-bug
+##PKG_NAME##: binary-package-depends-on-toolchain-package
 % if (($CPKG_BUILDING_MYSELF)); then
 ##PKG_NAME##: script-not-executable
 ##PKG_NAME##: extra-license-file
+##PKG_NAME##: uses-dpkg-database-directly
 % fi
