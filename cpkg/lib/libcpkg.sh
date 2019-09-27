@@ -705,15 +705,12 @@ function cp_find_cmd() {
     local VARNAME=$1
     local CMD=$2
     local OPTIONAL=$3
-    local BINDIR
 
-    for BINDIR in ${PATH//:/ }; do
-        if [ -x "$BINDIR/$CMD" ]; then
-            export "$VARNAME"=$BINDIR/$CMD
-            cp_log "using $CMD from $BINDIR/$CMD"
-            return
-        fi
-    done
+    if [ $(which $CMD) ]; then
+        export "$VARNAME"=$(which $CMD)
+        cp_log "using $CMD from $(which $CMD)"
+        return
+    fi
 
     [[ "$OPTIONAL" ]] || cp_error "$CMD not found"
 }
