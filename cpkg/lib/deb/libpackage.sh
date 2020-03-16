@@ -147,7 +147,7 @@ function lp_build_package() {
     lintian \
         -q \
         --suppress-tags bad-distribution-in-changes-file \
-        --fail-on-warnings *.changes
+        *.changes
 }
 
 function build_pkgconfig_filters() {
