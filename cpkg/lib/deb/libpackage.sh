@@ -145,9 +145,8 @@ function lp_build_package() {
     cp_msg "checking $PKG_NAME-$PKG_VER"
 
     lintian \
-        -q \
         --suppress-tags bad-distribution-in-changes-file \
-        --fail-on-warnings *.changes
+        *.changes
 }
 
 function build_pkgconfig_filters() {
@@ -173,9 +172,9 @@ function build_pkgconfig_filters() {
     egrep -v "^/usr/include$" | \
     sed \
         -r \
-        -e "s,^/usr/(include|lib)/($ARCH/)?,s@^," \
-        -e "s,$,/@@," | \
-    egrep "^s@" \
+        -e "s,^/usr/(include|lib)/($ARCH/)?,s#^," \
+        -e "s,$,/##," | \
+    egrep "^s#" \
         > $CACHE.filters
 
     set -e
